@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="PushMessageMultiLine">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#FF0000</item> <!-- Red color -->
+        <item name="android:layout_margin">8dp</item>
+    </style>
+
+    <style name="PushTitle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#FF0000</item> <!-- Red color -->
+        <item name="android:layout_margin">8dp</item>
+    </style>
+
+    <style name="MetaData">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">#FF0000</item> <!-- Red color -->
+        <item name="android:layout_margin">8dp</item>
+    </style>
+</resources>

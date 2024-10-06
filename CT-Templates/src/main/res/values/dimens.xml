@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="metadata_title_margin_vertical">10</dimen>
+    <dimen name="padding_vertical">10</dimen>
+    <dimen name="metadata_title_margin_horizontal">10</dimen>
+    <dimen name="large_icon">40</dimen>
+    <dimen name="padding_negative">-5</dimen>
+    <dimen name="metadata_small_icon_x">10</dimen>
+    <dimen name="metadata_small_icon_y">10</dimen>
+    <dimen name="metadata_margin_x">10</dimen>
+</resources>
