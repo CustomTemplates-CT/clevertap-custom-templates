@@ -4,4 +4,10 @@
     <color name="light_gray">#434047</color>
     <color name="colorAccent">#30A23E</color>
 
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <color name="colorGraySoft">#efefef</color>
+    <color name="colorBlackSoft">#262626</color>
+
 </resources>
