@@ -8,4 +8,8 @@
     <dimen name="metadata_small_icon_x">10</dimen>
     <dimen name="metadata_small_icon_y">10</dimen>
     <dimen name="metadata_margin_x">10</dimen>
+
+<!--    coachmarks-->
+    <dimen name="dimen_10dp">10dp</dimen>
+    <dimen name="margin_07">7dp</dimen>
 </resources>
