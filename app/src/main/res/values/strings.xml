@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">CleverTap-Custom-Templates</string>
+    <string name="view_product">View Product</string>
+    <string name="sdk_not_initialized">Clevertap SDK not initialized</string>
+    <string name="event_trigger_failed">Event Trigger Failed</string>
+    <string name="profile_update_failed">Profile Update Failed</string>
+    <string name="channel_not_created">Channel not created</string>
+    <string name="on_user_login">OnUserLogin</string>
+    <string name="profile_push">Profile Push</string>
+    <string name="push_message">Push Message</string>
+    <string name="in_app_message">In App</string>
+    <string name="native_display_button">Native Disp</string>
+    <string name="app_inbox">App Inbox</string>
+    <string name="get_message_inbox">Get Message Inbox</string>
+    <string name="push_templates">Push Templates</string>
+    <string name="addedtocart">ATC</string>
+    <string name="charged">Charged</string>
+    <string name="addcartMultivalue">Add Cart</string>
+    <string name="coupon_code">COUPON CODE</string>
+    <string name="logo">logo</string>
+    <string name="showpush">ShowPush</string>
 </resources>

@@ -10,8 +10,17 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:name=".CTApplication"
         android:theme="@style/Theme.CleverTapCustomTemplates"
         tools:targetApi="31">
+
+        <meta-data
+            android:name="CLEVERTAP_ACCOUNT_ID"
+            android:value="449-R88-8R7Z" />
+        <meta-data
+            android:name="CLEVERTAP_TOKEN"
+            android:value="bb2-c44" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -21,6 +30,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service android:name=".MyFCMService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
 
         <receiver android:name="com.clevertap.ct_templates.common.NotificationDismissReceiver" />
     </application>
