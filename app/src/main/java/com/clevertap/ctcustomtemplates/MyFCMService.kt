@@ -30,9 +30,6 @@ class MyFCMService : FirebaseMessagingService() {
                     val info = CleverTapAPI.getNotificationInfo(extras)
                     if (info.fromCleverTap) {
                         if (extras.containsKey("sticky")) {
-                            //TODO: Create your custom sticky notification here-
-                            // set the ongoing flag to true for the NotificationBuilder by-
-                            // calling notificationBuilder.setOngoing(true);
 //                            sendBroadcast( Intent("MyAction"));
 
 //                            showPIP()
