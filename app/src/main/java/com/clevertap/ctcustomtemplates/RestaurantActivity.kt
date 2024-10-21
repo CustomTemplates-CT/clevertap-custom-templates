@@ -8,12 +8,14 @@ import androidx.core.view.WindowInsetsCompat
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import com.clevertap.android.sdk.CleverTapAPI
 import com.clevertap.android.sdk.displayunits.DisplayUnitListener
 import com.clevertap.android.sdk.displayunits.model.CleverTapDisplayUnit
 import com.clevertap.ct_templates.nd.coachmark.CoachMarkSequence
 import com.clevertap.ctcustomtemplates.databinding.ActivityRestaurantBinding
+import com.google.android.material.textfield.TextInputLayout
 import de.hdodenhof.circleimageview.CircleImageView
 
 import java.util.ArrayList
@@ -62,7 +64,6 @@ class RestaurantActivity : AppCompatActivity(), DisplayUnitListener {
                 val viewId5 = resources.getIdentifier(unit.customExtras["nd_title5_id"], "id", packageName)
 
                 addItem(
-
                     targetView = findViewById<CircleImageView>(viewId1),
                     title = unit.customExtras["nd_title1"]!!,
                     subTitle = unit.customExtras["nd_subtitle1"]!!,
@@ -74,7 +75,7 @@ class RestaurantActivity : AppCompatActivity(), DisplayUnitListener {
                     skipButtonTextColor = Color.parseColor(unit.customExtras["nd_skipBtnTextColor"])
                 )
                 addItem(
-                    targetView = findViewById<CircleImageView>(viewId2),
+                    targetView = findViewById<TextInputLayout>(viewId2),
                     title = unit.customExtras["nd_title2"]!!,
                     subTitle = unit.customExtras["nd_subtitle2"]!!,
                     positiveButtonText = unit.customExtras["nd_positiveButtonText"]!!,
@@ -85,7 +86,7 @@ class RestaurantActivity : AppCompatActivity(), DisplayUnitListener {
                     skipButtonTextColor = Color.parseColor(unit.customExtras["nd_skipBtnTextColor"])
                 )
                 addItem(
-                    targetView = findViewById<CircleImageView>(viewId3),
+                    targetView = findViewById<ImageView>(viewId3),
                     title = unit.customExtras["nd_title3"]!!,
                     subTitle = unit.customExtras["nd_subtitle3"]!!,
                     positiveButtonText = unit.customExtras["nd_positiveButtonText"]!!,
@@ -96,7 +97,7 @@ class RestaurantActivity : AppCompatActivity(), DisplayUnitListener {
                     skipButtonTextColor = Color.parseColor(unit.customExtras["nd_skipBtnTextColor"])
                 )
                 addItem(
-                    targetView = findViewById<CircleImageView>(viewId4),
+                    targetView = findViewById<ImageView>(viewId4),
                     title = unit.customExtras["nd_title4"]!!,
                     subTitle = unit.customExtras["nd_subtitle4"]!!,
                     positiveButtonText = unit.customExtras["nd_positiveButtonText"]!!,
@@ -107,7 +108,7 @@ class RestaurantActivity : AppCompatActivity(), DisplayUnitListener {
                     skipButtonTextColor = Color.parseColor(unit.customExtras["nd_skipBtnTextColor"])
                 )
                 addItem(
-                    targetView = findViewById<CircleImageView>(viewId5),
+                    targetView = findViewById<ImageView>(viewId5),
                     title = unit.customExtras["nd_title5"]!!,
                     subTitle = unit.customExtras["nd_subtitle5"]!!,
                     positiveButtonText = unit.customExtras["nd_finalPositiveButtonText"]!!,
