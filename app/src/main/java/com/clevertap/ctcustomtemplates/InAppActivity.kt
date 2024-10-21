@@ -1,0 +1,98 @@
+package com.clevertap.ctcustomtemplates
+
+import android.app.NotificationManager
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import com.clevertap.android.sdk.CleverTapAPI
+import com.clevertap.ctcustomtemplates.databinding.ActivityInAppBinding
+import com.clevertap.ctcustomtemplates.databinding.ActivityRestaurantBinding
+
+class InAppActivity : AppCompatActivity() {
+
+    lateinit var binding: ActivityInAppBinding
+    private var cleverTapDefaultInstance: CleverTapAPI? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        cleverTapDefaultInstance = CleverTapAPI.getDefaultInstance(applicationContext)
+        binding = ActivityInAppBinding.inflate(
+            layoutInflater
+        )
+        setContentView(binding.root)
+
+        binding.fands.setOnClickListener {
+            cleverTapDefaultInstance!!.pushEvent("FeedbackAndSurveyInApp")
+        }
+        binding.scratchcard.setOnClickListener {
+            cleverTapDefaultInstance!!.pushEvent("ScratchcardInApp")
+        }
+        binding.spinthewheel.setOnClickListener {
+            cleverTapDefaultInstance!!.pushEvent("SpinTheWheelInApp")
+        }
+        binding.fsgif.setOnClickListener {
+            cleverTapDefaultInstance!!.pushEvent("FullScreenGIFInApp")
+        }
+        binding.fwcarousel.setOnClickListener {
+            cleverTapDefaultInstance!!.pushEvent("FullScreenCarouselInApp")
+        }
+        binding.giffooter.setOnClickListener {
+            cleverTapDefaultInstance!!.pushEvent("GifFooterInApp")
+        }
+        binding.cwtacta.setOnClickListener {
+            cleverTapDefaultInstance!!.pushEvent("CardTextCtaInApp")
+        }
+        binding.bscarousel.setOnClickListener {
+            cleverTapDefaultInstance!!.pushEvent("BottomSheetCarouselInApp")
+        }
+        binding.btcornerin.setOnClickListener {
+            cleverTapDefaultInstance!!.pushEvent("BottomCornerInApp")
+        }
+        binding.copycouponbt.setOnClickListener {
+            cleverTapDefaultInstance!!.pushEvent("CopyCouponInApp")
+        }
+        binding.ytvideo.setOnClickListener {
+            cleverTapDefaultInstance!!.pushEvent("YoutubeVideoInApp")
+        }
+
+
+        if ("Dismiss" == intent.action) {
+            var notificationId : Int = intent.getIntExtra("nid", -1)
+            if(notificationId != -1) {
+                val notificationManager =
+                    getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+                notificationManager.cancel(notificationId);
+            }
+        }
+
+        val message = intent.getStringExtra("coupon")
+        if (message != null) {
+            textCopy(this,message)
+        } else {
+            Toast.makeText(this, "Invalid coupon!", Toast.LENGTH_SHORT)
+                .show()
+        }
+
+    }
+
+
+
+    private fun textCopy(context: Context, couponCode: String) {
+        try {
+            val clipboard = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("label", couponCode)
+            clipboard.setPrimaryClip(clip)
+        } catch (e: java.lang.Exception) {
+            Log.e(
+                "Exception - ",
+                "PushTemplateRenderer " + e.localizedMessage
+            )
+        }
+    }
+}

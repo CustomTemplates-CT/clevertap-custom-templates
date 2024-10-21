@@ -1,7 +1,13 @@
 package com.clevertap.ct_templates.pn;
 
+
+import static android.content.Context.CLIPBOARD_SERVICE;
+import static androidx.core.content.ContextCompat.getSystemService;
+
 import android.Manifest;
 import android.app.PendingIntent;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
