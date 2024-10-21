@@ -2,6 +2,7 @@
 agp = "8.6.1"
 analytics = "4.11.3"
 android = "1.10.3"
+circleimageview = "3.1.0"
 clevertapAndroidSdk = "7.0.1"
 firebaseAnalytics = "22.1.2"
 firebaseBom = "33.4.0"
@@ -24,6 +25,7 @@ pushTemplates = "1.2.0"
 analytics = { module = "com.segment.analytics.android:analytics", version.ref = "analytics" }
 android = { module = "com.segment.analytics.kotlin:android", version.ref = "android" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
 clevertap-android-sdk = { module = "com.clevertap.android:clevertap-android-sdk", version.ref = "clevertapAndroidSdk" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }

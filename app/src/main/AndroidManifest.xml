@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
+        android:name=".CTApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -10,9 +11,28 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:name=".CTApplication"
         android:theme="@style/Theme.CleverTapCustomTemplates"
         tools:targetApi="31">
+        <activity
+            android:name=".RestaurantActivity"
+            android:exported="false" />
+        <activity
+            android:name=".InAppActivity"
+            android:exported="true"
+            android:launchMode="singleTop">
+            <intent-filter android:label="XYZ">
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="Dismiss" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="cltanalytics"
+                    android:pathPrefix="/deeplinktest"
+                    android:scheme="android" />
+            </intent-filter>
+
+        </activity>
 
         <meta-data
             android:name="CLEVERTAP_ACCOUNT_ID"
@@ -31,7 +51,8 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".MyFCMService"
+        <service
+            android:name=".MyFCMService"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

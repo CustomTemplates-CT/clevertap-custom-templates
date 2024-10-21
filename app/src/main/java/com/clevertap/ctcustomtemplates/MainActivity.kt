@@ -2,29 +2,22 @@ package com.clevertap.ctcustomtemplates
 
 import android.annotation.SuppressLint
 import android.app.NotificationManager
-import android.graphics.Bitmap
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+
 import android.widget.CompoundButton
-import android.widget.EditText
-import android.widget.RelativeLayout
-import android.widget.TextView
+
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
-import androidx.appcompat.widget.AppCompatImageView
-import androidx.appcompat.widget.SwitchCompat
-import androidx.cardview.widget.CardView
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.clevertap.android.pushtemplates.TemplateRenderer
 import com.clevertap.android.sdk.CleverTapAPI
 import com.clevertap.android.sdk.PushPermissionResponseListener
 import com.clevertap.android.sdk.inapp.CTLocalInApp
+import com.clevertap.ctcustomtemplates.databinding.ActivityMainBinding
+import com.clevertap.ctcustomtemplates.databinding.ActivityRestaurantBinding
 import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -36,7 +29,7 @@ import java.util.concurrent.Executors
 class MainActivity : AppCompatActivity(),
     CompoundButton.OnCheckedChangeListener,
     PushPermissionResponseListener {
-
+    lateinit var binding: ActivityMainBinding
     private val MY_PERMISSIONS_REQUEST_LOCATION = 99
     private val MY_PERMISSIONS_REQUEST_BACKGROUND_LOCATION = 66
     var defaultFirebaseAnalytics: FirebaseAnalytics? = null
@@ -44,62 +37,29 @@ class MainActivity : AppCompatActivity(),
     var profilePushButton: AppCompatButton? = null
     var cleverTapDefaultInstance: CleverTapAPI? = null
     var inAppButton: AppCompatButton? = null
-    var pushNotification: AppCompatButton? = null
-    var appInboxButton: AppCompatButton? = null
-    var getAppInboxMessage: AppCompatButton? = null
-    var nativeDisplayButton: AppCompatButton? = null
-    var addedToCartButton: AppCompatButton? = null
-    var chargedButton: AppCompatButton? = null
-    var addCart: AppCompatButton? = null
-    var clearCart: AppCompatButton? = null
-    var notifyMe: AppCompatButton? = null
-    var isPrimerPopupGranted : Boolean = false
-
-    var card_basic: CardView? = null
-    var text1: TextView? = null
-    var titlem: TextView? = null
-    var msg: TextView? = null
-    var pushTemplates: AppCompatButton? = null
-    val idList = arrayListOf<String>()
-    val pushTemplateJsons = HashMap<String, Any>()
-
-    val cartProductList = arrayListOf<String>()
-    val executor = Executors.newSingleThreadExecutor()
-    var imageOnlineBm: Bitmap? = null
-    var imageMainBm: Bitmap? = null
-    var imageIconBm: Bitmap? = null
-
-    var imageOnline: AppCompatImageView? = null
-    var imageMain: AppCompatImageView? = null
-    var imageIcon: AppCompatImageView? = null
-
-    var ll: RelativeLayout? = null
-    val handler = Handler(Looper.getMainLooper())
-
-    var edtphone: EditText? = null
-    var edtemail: EditText? = null
-    var edtid: EditText? = null
-
-    var optin: SwitchCompat? = null
-    var offline: SwitchCompat? = null
-
 
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-        cleverTapDefaultInstance = (this.application as CTApplication).getCTInstance()
-        pushNotification = findViewById(R.id.pushButton)
 
-        pushNotification!!.setOnClickListener {
-            cleverTapDefaultInstance!!.pushEvent("ShowPush")
+
+        binding = ActivityMainBinding.inflate(
+            layoutInflater
+        )
+        setContentView(binding.root)
+
+        cleverTapDefaultInstance = (this.application as CTApplication).getCTInstance()
+
+        binding.navigatetoinapp.setOnClickListener {
+            startActivity(Intent(applicationContext,InAppActivity::class.java))
+        }
+        binding.navigatecoachmark.setOnClickListener {
+            startActivity(Intent(applicationContext,RestaurantActivity::class.java))
+        }
+
+        binding.pushButton.setOnClickListener {
+            cleverTapDefaultInstance!!.pushEvent("CopyCouponPush")
         }
         initializeCleverTapSDK()
         setFirebaseInstance()

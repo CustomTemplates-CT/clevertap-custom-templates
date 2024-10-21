@@ -31,6 +31,9 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
@@ -54,6 +57,7 @@ dependencies {
     implementation libs.android
     implementation libs.analytics
     implementation libs.push.templates
+    implementation libs.circleimageview
 
     implementation project(':CT-Templates')
 }
