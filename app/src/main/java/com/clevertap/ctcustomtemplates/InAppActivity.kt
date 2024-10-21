@@ -1,6 +1,12 @@
 package com.clevertap.ctcustomtemplates
 
+import android.app.NotificationManager
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -56,5 +62,37 @@ class InAppActivity : AppCompatActivity() {
         }
 
 
+        if ("Dismiss" == intent.action) {
+            var notificationId : Int = intent.getIntExtra("nid", -1)
+            if(notificationId != -1) {
+                val notificationManager =
+                    getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+                notificationManager.cancel(notificationId);
+            }
+        }
+
+        val message = intent.getStringExtra("coupon")
+        if (message != null) {
+            textCopy(this,message)
+        } else {
+            Toast.makeText(this, "Invalid coupon!", Toast.LENGTH_SHORT)
+                .show()
+        }
+
+    }
+
+
+
+    private fun textCopy(context: Context, couponCode: String) {
+        try {
+            val clipboard = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("label", couponCode)
+            clipboard.setPrimaryClip(clip)
+        } catch (e: java.lang.Exception) {
+            Log.e(
+                "Exception - ",
+                "PushTemplateRenderer " + e.localizedMessage
+            )
+        }
     }
 }

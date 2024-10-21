@@ -34,4 +34,5 @@
     <string name="gif_at_footer">GIF at Footer</string>
     <string name="bottom_sheet_carousel">Bottom Sheet\n Carousel</string>
     <string name="full_screen_gif">Full Screen GIF</string>
+    <string name="gif_push">Gif Push</string>
 </resources>

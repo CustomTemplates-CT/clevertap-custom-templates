@@ -61,6 +61,9 @@ class MainActivity : AppCompatActivity(),
         binding.pushButton.setOnClickListener {
             cleverTapDefaultInstance!!.pushEvent("CopyCouponPush")
         }
+        binding.pushgif.setOnClickListener {
+            cleverTapDefaultInstance!!.pushEvent("GifPush")
+        }
         initializeCleverTapSDK()
         setFirebaseInstance()
 
