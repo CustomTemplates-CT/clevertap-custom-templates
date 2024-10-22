@@ -75,8 +75,7 @@ class InAppActivity : AppCompatActivity() {
         if (message != null) {
             textCopy(this,message)
         } else {
-            Toast.makeText(this, "Invalid coupon!", Toast.LENGTH_SHORT)
-                .show()
+
         }
 
     }

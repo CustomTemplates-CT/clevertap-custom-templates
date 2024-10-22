@@ -3,32 +3,44 @@ package com.clevertap.ctcustomtemplates
 import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.Intent
+import android.graphics.Outline
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-
+import android.util.Log
+import android.view.MotionEvent
+import android.view.View
+import android.view.View.OnTouchListener
+import android.view.ViewGroup
+import android.view.ViewOutlineProvider
 import android.widget.CompoundButton
-
+import android.widget.RelativeLayout
+import android.widget.TextView
 import android.widget.Toast
+import android.widget.VideoView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
-import com.clevertap.android.pushtemplates.TemplateRenderer
 import com.clevertap.android.sdk.CleverTapAPI
 import com.clevertap.android.sdk.PushPermissionResponseListener
+import com.clevertap.android.sdk.displayunits.DisplayUnitListener
+import com.clevertap.android.sdk.displayunits.model.CleverTapDisplayUnit
 import com.clevertap.android.sdk.inapp.CTLocalInApp
+import com.clevertap.ct_templates.TemplateRenderer
+import com.clevertap.ct_templates.nd.NativeDisplayListener
 import com.clevertap.ctcustomtemplates.databinding.ActivityMainBinding
-import com.clevertap.ctcustomtemplates.databinding.ActivityRestaurantBinding
 import com.google.firebase.analytics.FirebaseAnalytics
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import java.util.Objects
-import java.util.concurrent.Executors
+
 
 class MainActivity : AppCompatActivity(),
     CompoundButton.OnCheckedChangeListener,
-    PushPermissionResponseListener {
+    PushPermissionResponseListener, DisplayUnitListener, NativeDisplayListener {
     lateinit var binding: ActivityMainBinding
     private val MY_PERMISSIONS_REQUEST_LOCATION = 99
     private val MY_PERMISSIONS_REQUEST_BACKGROUND_LOCATION = 66
@@ -37,6 +49,11 @@ class MainActivity : AppCompatActivity(),
     var profilePushButton: AppCompatButton? = null
     var cleverTapDefaultInstance: CleverTapAPI? = null
     var inAppButton: AppCompatButton? = null
+    var videoViewPIP: VideoView? = null
+    private var dX = 0f
+    var dY:kotlin.Float = 0f
+    private var lastAction = 0
+    var relpop: RelativeLayout? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("MissingInflatedId")
@@ -50,8 +67,9 @@ class MainActivity : AppCompatActivity(),
         setContentView(binding.root)
 
         cleverTapDefaultInstance = (this.application as CTApplication).getCTInstance()
-
+        cleverTapDefaultInstance?.setDisplayUnitListener(this)
         binding.navigatetoinapp.setOnClickListener {
+
             startActivity(Intent(applicationContext,InAppActivity::class.java))
         }
         binding.navigatecoachmark.setOnClickListener {
@@ -64,10 +82,17 @@ class MainActivity : AppCompatActivity(),
         binding.pushgif.setOnClickListener {
             cleverTapDefaultInstance!!.pushEvent("GifPush")
         }
+        binding.pipvideo.setOnClickListener {
+            initiatePIP()
+            //startActivity(Intent(applicationContext,PIPActivity::class.java))
+        }
+
         initializeCleverTapSDK()
         setFirebaseInstance()
 
         startHandler()
+
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -133,7 +158,7 @@ class MainActivity : AppCompatActivity(),
                 )
             }
         } catch (e: Exception) {
-            Toast.makeText(this, R.string.channel_not_created, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Notification Channel not created", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -145,10 +170,9 @@ class MainActivity : AppCompatActivity(),
             cleverTapDefaultInstance!!.enableDeviceNetworkInfoReporting(true);
             cleverTapDefaultInstance!!.enablePersonalization()
             cleverTapDefaultInstance!!.registerPushPermissionNotificationResponseListener(this)
-            TemplateRenderer.debugLevel = 3
 
         } catch (e: Exception) {
-            Toast.makeText(this, R.string.sdk_not_initialized, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "SDK not initialised", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -164,6 +188,48 @@ class MainActivity : AppCompatActivity(),
         if (accepted) {
             setupPushNotifications()
         }
+    }
+
+    override fun onDisplayUnitsLoaded(units: ArrayList<CleverTapDisplayUnit>?) {
+        Log.d("NativeDisplay", "payload$units")
+        for (i in 0 until units!!.size) {
+            val unit = units[i]
+            if (unit.customExtras["nd_id"].equals("nd_pip_video")) {
+                TemplateRenderer.getInstance().showNativeDisplay(
+                    R.id.pip_fragment, supportFragmentManager, unit.jsonObject, this
+                )
+            } else if (unit.customExtras["nd_id"].equals("nd_custom_button")) {
+                TemplateRenderer.getInstance().animateButton(
+                    applicationContext,
+                    binding.root as ViewGroup?, unit.jsonObject, this
+                )
+            }
+        }
+    }
+
+    override fun onSuccess(id: String?) {
+        //Template rendered successfully.
+        cleverTapDefaultInstance!!.pushDisplayUnitViewedEventForID(id)
+    }
+
+    override fun onFailure(id: String?) {
+
+    }
+
+    override fun onClick(resId: Int, id: String?, deepLink: String?) {
+        cleverTapDefaultInstance!!.pushDisplayUnitClickedEventForID(id)
+    }
+
+    private fun initiatePIP() {
+        cleverTapDefaultInstance!!.pushEvent("ShowPIPND")
+    }
+
+
+    private fun playVideo(videoUrl: String) {
+        val videoUri = Uri.parse(videoUrl)
+        videoViewPIP!!.setVideoURI(videoUri)
+        videoViewPIP!!.start()
+        videoViewPIP!!.resume()
     }
 
 }

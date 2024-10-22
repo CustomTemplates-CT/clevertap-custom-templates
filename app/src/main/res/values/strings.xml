@@ -35,4 +35,7 @@
     <string name="bottom_sheet_carousel">Bottom Sheet\n Carousel</string>
     <string name="full_screen_gif">Full Screen GIF</string>
     <string name="gif_push">Gif Push</string>
+    <string name="pip_video">PIP Video</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

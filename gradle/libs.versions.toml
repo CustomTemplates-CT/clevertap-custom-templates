@@ -4,6 +4,7 @@ analytics = "4.11.3"
 android = "1.10.3"
 circleimageview = "3.1.0"
 clevertapAndroidSdk = "7.0.1"
+exoplayer = "2.19.1"
 firebaseAnalytics = "22.1.2"
 firebaseBom = "33.4.0"
 firebaseMessaging = "24.0.2"
@@ -27,6 +28,9 @@ android = { module = "com.segment.analytics.kotlin:android", version.ref = "andr
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
 clevertap-android-sdk = { module = "com.clevertap.android:clevertap-android-sdk", version.ref = "clevertapAndroidSdk" }
+exoplayer = { module = "com.google.android.exoplayer:exoplayer", version.ref = "exoplayer" }
+exoplayer-hls = { module = "com.google.android.exoplayer:exoplayer-hls", version.ref = "exoplayer" }
+exoplayer-ui = { module = "com.google.android.exoplayer:exoplayer-ui", version.ref = "exoplayer" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-messaging = { module = "com.google.firebase:firebase-messaging", version.ref = "firebaseMessaging" }
