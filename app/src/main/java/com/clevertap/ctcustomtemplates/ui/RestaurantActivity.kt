@@ -1,11 +1,7 @@
-package com.clevertap.ctcustomtemplates
+package com.clevertap.ctcustomtemplates.ui
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -14,6 +10,7 @@ import com.clevertap.android.sdk.CleverTapAPI
 import com.clevertap.android.sdk.displayunits.DisplayUnitListener
 import com.clevertap.android.sdk.displayunits.model.CleverTapDisplayUnit
 import com.clevertap.ct_templates.nd.coachmark.CoachMarkSequence
+import com.clevertap.ctcustomtemplates.R
 import com.clevertap.ctcustomtemplates.databinding.ActivityRestaurantBinding
 import com.google.android.material.textfield.TextInputLayout
 import de.hdodenhof.circleimageview.CircleImageView
@@ -22,10 +19,9 @@ import java.util.ArrayList
 
 class RestaurantActivity : AppCompatActivity(), DisplayUnitListener {
 
-
     lateinit var binding: ActivityRestaurantBinding
     private var cleverTapDefaultInstance: CleverTapAPI? = null
-    lateinit var coachMarkSequence: CoachMarkSequence
+    private lateinit var coachMarkSequence: CoachMarkSequence
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,11 +53,16 @@ class RestaurantActivity : AppCompatActivity(), DisplayUnitListener {
             //Notification Viewed Event
             CleverTapAPI.getDefaultInstance(this)?.pushDisplayUnitViewedEventForID(unit.unitID)
             coachMarkSequence.apply {
-                val viewId1 = resources.getIdentifier(unit.customExtras["nd_title1_id"], "id", packageName)
-                val viewId2 = resources.getIdentifier(unit.customExtras["nd_title2_id"], "id", packageName)
-                val viewId3 = resources.getIdentifier(unit.customExtras["nd_title3_id"], "id", packageName)
-                val viewId4 = resources.getIdentifier(unit.customExtras["nd_title4_id"], "id", packageName)
-                val viewId5 = resources.getIdentifier(unit.customExtras["nd_title5_id"], "id", packageName)
+                val viewId1 =
+                    resources.getIdentifier(unit.customExtras["nd_title1_id"], "id", packageName)
+                val viewId2 =
+                    resources.getIdentifier(unit.customExtras["nd_title2_id"], "id", packageName)
+                val viewId3 =
+                    resources.getIdentifier(unit.customExtras["nd_title3_id"], "id", packageName)
+                val viewId4 =
+                    resources.getIdentifier(unit.customExtras["nd_title4_id"], "id", packageName)
+                val viewId5 =
+                    resources.getIdentifier(unit.customExtras["nd_title5_id"], "id", packageName)
 
                 addItem(
                     targetView = findViewById<CircleImageView>(viewId1),
@@ -126,12 +127,10 @@ class RestaurantActivity : AppCompatActivity(), DisplayUnitListener {
                     //Notification Clicked Event
                     CleverTapAPI.getDefaultInstance(this@RestaurantActivity)
                         ?.pushDisplayUnitClickedEventForID(unit.unitID).apply {
-                        Toast.makeText(
-                            applicationContext,
-                            "Event Card Clicked!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+                            Toast.makeText(
+                                applicationContext, "Event Card Clicked!", Toast.LENGTH_SHORT
+                            ).show()
+                        }
                 }
             }
         } else {

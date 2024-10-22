@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">CleverTap-Custom-Templates</string>
+    <string name="app_name">CleverTap Custom Templates</string>
     <string name="view_product">View Product</string>
     <string name="sdk_not_initialized">Clevertap SDK not initialized</string>
     <string name="event_trigger_failed">Event Trigger Failed</string>

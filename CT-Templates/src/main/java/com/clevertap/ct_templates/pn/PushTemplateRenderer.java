@@ -1,13 +1,8 @@
 package com.clevertap.ct_templates.pn;
 
 
-import static android.content.Context.CLIPBOARD_SERVICE;
-import static androidx.core.content.ContextCompat.getSystemService;
-
 import android.Manifest;
 import android.app.PendingIntent;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -40,6 +35,16 @@ public class PushTemplateRenderer {
         }
     }
 
+    static ArrayList<String> getImageListFromExtras(Bundle extras, String size) {
+        ArrayList<String> imageList = new ArrayList<>();
+        for (String key : extras.keySet()) {
+            if (key.contains("pt_" + size + "_img")) {
+                imageList.add(extras.getString(key));
+            }
+        }
+        return imageList;
+    }
+
     public void render(Context applicationContext, Bundle extras, PushNotificationListener listener) {
 
         switch (Objects.requireNonNull(extras.getString("pt_id"))) {
@@ -60,6 +65,8 @@ public class PushTemplateRenderer {
 
     private void renderGIFNotification(Context applicationContext, Bundle extras, PushNotificationListener listener) {
         try {
+            int notificationId = new Random().nextInt(60000);
+
             ArrayList<String> smallImageList = getImageListFromExtras(extras, "small");
             ArrayList<String> largeImageList = getImageListFromExtras(extras, "large");
 
@@ -73,12 +80,12 @@ public class PushTemplateRenderer {
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(applicationContext);
             NotificationCompat.Builder builder = new NotificationCompat.Builder(applicationContext, extras.getString("wzrk_cid"));
 
+
             RemoteViews gifExpandedContentView = new RemoteViews(applicationContext.getPackageName(), R.layout.gif_notification);
             RemoteViews gifCollapsedContentView = new RemoteViews(applicationContext.getPackageName(), R.layout.gif_collapsed);
 
             gifExpandedContentView.setTextViewText(R.id.title, pushTitle);
             gifExpandedContentView.setTextViewText(R.id.msg, pushMessage);
-
 
             for (String image : smallImageList) {
                 RemoteViews imageContentView = new RemoteViews(applicationContext.getPackageName(), R.layout.image_view);
@@ -95,13 +102,22 @@ public class PushTemplateRenderer {
             if (ActivityCompat.checkSelfPermission(applicationContext, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
-            notificationManager.notify(2, builder.setContentTitle("title")
+
+//            builder.setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+//                    .setSmallIcon(R.drawable.pt_dot_sep)
+//                    .setCustomContentView(gifCollapsedContentView)
+//                    .setCustomBigContentView(gifExpandedContentView)
+//                    .setOnlyAlertOnce(true)
+//                    .setAutoCancel(true);
+
+            notificationManager.notify(notificationId, builder.setContentTitle(pushTitle)
                     .setSmallIcon(R.drawable.custom_progress_drawable)
                     .setCustomContentView(gifCollapsedContentView)
-                    .setStyle(new NotificationCompat.BigTextStyle())
+                    .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                     .setCustomBigContentView(gifExpandedContentView)
                     .setOnlyAlertOnce(true)
-                    .setPriority(NotificationCompat.PRIORITY_HIGH).build());
+                    .setPriority(NotificationCompat.PRIORITY_MAX)
+                    .build());
 
             listener.onPushRendered();
         } catch (Exception e) {
@@ -109,21 +125,12 @@ public class PushTemplateRenderer {
         }
     }
 
-    static ArrayList<String> getImageListFromExtras(Bundle extras, String size) {
-        ArrayList<String> imageList = new ArrayList<>();
-        for (String key : extras.keySet()) {
-            if (key.contains("pt_" + size + "_img")) {
-                imageList.add(extras.getString(key));
-            }
-        }
-        return imageList;
-    }
-
     private void renderProgressBarNotification(Context applicationContext, Bundle extras, PushNotificationListener listener) {
 
         try {
             NotificationCompat.Builder builder;
             NotificationManagerCompat notificationManager;
+            int notificationId = new Random().nextInt(60000);
 
             notificationManager = NotificationManagerCompat.from(applicationContext);
             builder = new NotificationCompat.Builder(applicationContext, extras.getString("wzrk_cid"));
@@ -135,8 +142,7 @@ public class PushTemplateRenderer {
             String image = extras.getString("pt_big_img");
             String deepLink = extras.getString("pt_dl");
 
-            if (pushTitleStart == null || timerThreshold == null ||
-                    pushTitleEnd == null || pushMessageEnd == null || image == null || deepLink == null) {
+            if (pushTitleStart == null || timerThreshold == null || pushTitleEnd == null || pushMessageEnd == null || image == null || deepLink == null) {
                 throw new IllegalArgumentException();
             }
 
@@ -163,10 +169,10 @@ public class PushTemplateRenderer {
             expanded.setInt(R.id.view_flipper, "setFlipInterval", 500);
 
             if (ActivityCompat.checkSelfPermission(applicationContext, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                 // for ActivityCompat#requestPermissions for more details.
+                // for ActivityCompat#requestPermissions for more details.
                 return;
             }
-            notificationManager.notify(2, getNotification(pushTitleStart, builder, collapsed, expanded).build());
+            notificationManager.notify(notificationId, getNotification(pushTitleStart, builder, collapsed, expanded).build());
 
             listener.onPushRendered();
 
@@ -176,12 +182,7 @@ public class PushTemplateRenderer {
     }
 
     private NotificationCompat.Builder getNotification(String title, NotificationCompat.Builder builder, RemoteViews collapsed, RemoteViews expanded) {
-        builder.setContentTitle(title)
-                .setSmallIcon(R.drawable.custom_progress_drawable)
-                .setCustomContentView(collapsed)
-                .setCustomBigContentView(expanded)
-                .setOnlyAlertOnce(true)
-                .setPriority(NotificationCompat.PRIORITY_HIGH);
+        builder.setContentTitle(title).setSmallIcon(R.drawable.custom_progress_drawable).setCustomContentView(collapsed).setCustomBigContentView(expanded).setOnlyAlertOnce(true).setPriority(NotificationCompat.PRIORITY_HIGH);
         return builder;
     }
 
@@ -207,41 +208,34 @@ public class PushTemplateRenderer {
             couponCodeView.setTextViewText(R.id.notification_body, pushMessage);
             couponCodeView.setTextViewText(R.id.notification_discount, discount);
             couponCodeView.setTextViewText(R.id.notification_coupon, couponCode);
-            couponCodeView.setTextViewText(R.id.notification_coupon_text,disc_title);
+            couponCodeView.setTextViewText(R.id.notification_coupon_text, disc_title);
 
             RemoteViews couponCodeViewsCollapsed = new RemoteViews(applicationContext.getPackageName(), R.layout.coupon_code_collpsed);
             couponCodeViewsCollapsed.setTextViewText(R.id.notification_title, pushTitle);
             couponCodeViewsCollapsed.setTextViewText(R.id.notification_coupon, couponCode);
 
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(deepLink));
-            intent.putExtra("coupon",couponCode);
-            intent.putExtra("nid",notificationId);
+            intent.putExtra("coupon", couponCode);
+            intent.putExtra("nid", notificationId);
             intent.setAction("Dismiss");
 
             if (intent.resolveActivity(applicationContext.getPackageManager()) != null) {
                 PendingIntent pendingIntent = PendingIntent.getActivity(applicationContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-                couponCodeView.setOnClickPendingIntent(R.id.clickarea,pendingIntent);
-                couponCodeViewsCollapsed.setOnClickPendingIntent(R.id.notification_coupon,pendingIntent);
+                couponCodeView.setOnClickPendingIntent(R.id.clickarea, pendingIntent);
+                couponCodeViewsCollapsed.setOnClickPendingIntent(R.id.notification_coupon, pendingIntent);
 
-                builder.setStyle(new NotificationCompat.DecoratedCustomViewStyle())
-                        .setSmallIcon(R.drawable.pt_dot_sep)
-                        .setCustomContentView(couponCodeViewsCollapsed)
-                        .setCustomBigContentView(couponCodeView)// Set custom notification layout
+                builder.setStyle(new NotificationCompat.DecoratedCustomViewStyle()).setSmallIcon(R.drawable.pt_dot_sep).setCustomContentView(couponCodeViewsCollapsed).setCustomBigContentView(couponCodeView)// Set custom notification layout
                         .setAutoCancel(true);
 
                 if (ActivityCompat.checkSelfPermission(applicationContext, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
                 notificationManager.notify(notificationId, builder.build());
-            }
-            else {
+            } else {
                 Toast.makeText(applicationContext, "Invalid Page!", Toast.LENGTH_SHORT).show();
             }
-
-
-        }
-        catch (Exception e){
-            Log.d("Here is the exception",e.getLocalizedMessage());
+        } catch (Exception e) {
+            Log.d("Here is the exception", e.getLocalizedMessage());
         }
 
     }

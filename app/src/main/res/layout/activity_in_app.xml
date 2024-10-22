@@ -1,112 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="10sp"
-    tools:context=".InAppActivity">
+    android:padding="16dp"
+    tools:context=".ui.InAppActivity">
 
     <LinearLayout
         android:id="@+id/leftcolumn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_margin="@dimen/dimen_10dp">
+        android:layout_margin="@dimen/dimen_10dp"
+        android:orientation="vertical">
 
-    <Button
-        android:id="@+id/scratchcard"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        <Button
+            android:id="@+id/scratchcard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/scratch_card" />
 
-        android:text="@string/scratch_card"
-         />
+        <Button
+            android:id="@+id/spinthewheel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/spin_the_wheel" />
 
-    <Button
-        android:id="@+id/spinthewheel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/spin_the_wheel"
-         />
+        <Button
+            android:id="@+id/fands"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:lines="2"
+            android:text="@string/feeedback_and_survey" />
 
-    <Button
-        android:id="@+id/fands"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/feeedback_and_survey"
-        android:lines="2"
-         />
+        <Button
+            android:id="@+id/ytvideo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/youtube_video" />
 
-    <Button
-        android:id="@+id/ytvideo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        <Button
+            android:id="@+id/fwcarousel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/fullscreen_with_carousel" />
 
-        android:text="@string/youtube_video"
-         />
-
-    <Button
-        android:id="@+id/fwcarousel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:text="@string/fullscreen_with_carousel"
-         />
-
-    <Button
-        android:id="@+id/cwtacta"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
-        android:text="@string/card_with_text_and_cta"
-        />
+        <Button
+            android:id="@+id/cwtacta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/card_with_text_and_cta" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/rightcolumn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dimen_10dp"
         android:orientation="vertical"
-        tools:ignore="RelativeOverlap"
-        android:layout_margin="@dimen/dimen_10dp">
-    <Button
-        android:id="@+id/copycouponbt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/copy_coupon_code"
-        />
+        tools:ignore="RelativeOverlap">
 
-    <Button
-        android:id="@+id/btcornerin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        <Button
+            android:id="@+id/copycouponbt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/copy_coupon_code" />
 
-        android:text="@string/bottom_corner_inapp"
-         />
+        <Button
+            android:id="@+id/btcornerin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/bottom_corner_inapp" />
 
-    <Button
-        android:id="@+id/giffooter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/gif_at_footer"
-         />
+        <Button
+            android:id="@+id/giffooter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/gif_at_footer" />
 
-    <Button
-        android:id="@+id/bscarousel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/bottom_sheet_carousel"
-        />
+        <Button
+            android:id="@+id/bscarousel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/bottom_sheet_carousel" />
 
-    <Button
-        android:id="@+id/fsgif"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/full_screen_gif"
-         />
+        <Button
+            android:id="@+id/fsgif"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/full_screen_gif" />
     </LinearLayout>
 </RelativeLayout>

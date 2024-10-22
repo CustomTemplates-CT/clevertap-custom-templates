@@ -1,6 +1,5 @@
 package com.clevertap.ctcustomtemplates
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import com.clevertap.android.sdk.CleverTapAPI
@@ -15,7 +14,7 @@ class MyFCMService : FirebaseMessagingService() {
         super.onMessageReceived(message)
         message.data.apply {
             try {
-                if (size > 0) {
+                if (isNotEmpty()) {
                     val extras = Bundle()
                     for ((key, value) in this) {
                         extras.putString(key, value)
@@ -34,12 +33,9 @@ class MyFCMService : FirebaseMessagingService() {
 
 //                            showPIP()
                         } else if (extras.getString("pt_type").equals("custom")) {
-                            TemplateRenderer.getInstance().showPushNotification(
-                                applicationContext,
+                            TemplateRenderer.getInstance().showPushNotification(applicationContext,
                                 extras,
-                                object :
-                                    PushNotificationListener,
-                                    com.clevertap.ct_templates.pn.PushNotificationListener {
+                                object : com.clevertap.ct_templates.pn.PushNotificationListener {
                                     override fun onPushRendered() {
                                         CleverTapAPI.getDefaultInstance(applicationContext)!!
                                             .pushNotificationViewedEvent(extras) // to track push impression.
@@ -47,14 +43,12 @@ class MyFCMService : FirebaseMessagingService() {
 
                                     override fun onPushFailed() {
                                         CTFcmMessageHandler().createNotification(
-                                            applicationContext,
-                                            message
+                                            applicationContext, message
                                         )
                                     }
                                 })
                         } else {
-                            CTFcmMessageHandler()
-                                .createNotification(applicationContext, message)
+                            CTFcmMessageHandler().createNotification(applicationContext, message)
                         }
                     } else {
                         // not from CleverTap handle yourself or pass to another provider
@@ -64,10 +58,5 @@ class MyFCMService : FirebaseMessagingService() {
                 Log.d("MYFCMLIST", "Error parsing FCM message", t)
             }
         }
-    }
-
-    override fun onNewToken(token: String) {
-        super.onNewToken(token)
-        //PushTemplateHandler.getCleverTapDefaultInstance()?.pushFcmRegistrationId(token, true)
     }
 }
