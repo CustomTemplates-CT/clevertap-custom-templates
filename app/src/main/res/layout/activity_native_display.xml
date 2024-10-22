@@ -35,9 +35,22 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:text="@string/navigate_to_coachmark"
+        app:layout_constraintBottom_toTopOf="@+id/pip_native_display"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/recycler_view_story"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <Button
+        android:id="@+id/pip_native_display"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="PIP Native Display"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/open_coach_mark_activity" />
 
     <FrameLayout
         android:id="@+id/pip_fragment"

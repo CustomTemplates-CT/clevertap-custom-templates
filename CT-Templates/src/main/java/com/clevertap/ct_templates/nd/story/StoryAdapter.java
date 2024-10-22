@@ -32,11 +32,8 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryViewHol
     @NonNull
     @Override
     public StoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ItemStoryBinding binding = DataBindingUtil.inflate(
-                LayoutInflater.from(context),
-                R.layout.item_story,
-                parent,
-                false
+        ItemStoryBinding binding = ItemStoryBinding.inflate(
+                LayoutInflater.from(context)
         );
         return new StoryViewHolder(binding, listener);
     }

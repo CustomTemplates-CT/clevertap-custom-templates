@@ -23,12 +23,19 @@ class NativeDisplayActivity : AppCompatActivity(), NativeDisplayListener, Displa
         binding = ActivityNativeDisplayBinding.inflate(
             layoutInflater
         )
+
         setContentView(binding.root)
         cleverTapDefaultInstance = (this.application as CTApplication).getCTInstance()
         cleverTapDefaultInstance.setDisplayUnitListener(this)
 
+        cleverTapDefaultInstance.pushEvent("ND Stories")
+        
         binding.openCoachMarkActivity.setOnClickListener {
             startActivity(Intent(applicationContext, RestaurantActivity::class.java))
+        }
+
+        binding.pipNativeDisplay.setOnClickListener {
+            cleverTapDefaultInstance.pushEvent("ShowPIPND")
         }
     }
 
