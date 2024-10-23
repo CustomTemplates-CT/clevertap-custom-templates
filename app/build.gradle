@@ -60,6 +60,9 @@ dependencies {
     implementation libs.analytics
     implementation libs.push.templates
     implementation libs.circleimageview
+    implementation libs.exoplayer
+    implementation libs.exoplayer.hls
+    implementation libs.exoplayer.ui
 
     implementation project(':CT-Templates')
 }

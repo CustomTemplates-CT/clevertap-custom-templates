@@ -6,7 +6,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.clevertap.android.sdk.CleverTapAPI
 import com.clevertap.ctcustomtemplates.databinding.ActivityInAppBinding
@@ -79,8 +78,6 @@ class InAppActivity : AppCompatActivity() {
         val message = intent.getStringExtra("coupon")
         if (message != null) {
             textCopy(this, message)
-        } else {
-            Toast.makeText(this, "Invalid coupon!", Toast.LENGTH_SHORT).show()
         }
     }
 
