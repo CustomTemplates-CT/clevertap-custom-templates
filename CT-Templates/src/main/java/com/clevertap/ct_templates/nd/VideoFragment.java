@@ -11,6 +11,8 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -18,15 +20,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.MediaController;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.VideoView;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-
 
 import com.clevertap.ct_templates.R;
 import com.clevertap.ct_templates.common.CustomMediaController;
@@ -41,21 +39,22 @@ public class VideoFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static VideoFragment videoFragment;
+    private final JSONObject cleverTapDisplayUnit;
+    private final Boolean isCancel = true;
     TextView cancelBtn;
     TextView expandButton;
+    View view;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private VideoView videoView;
-    private RelativeLayout draggableFrame;
-    private final JSONObject cleverTapDisplayUnit;
+    private FrameLayout draggableFrame;
+    private FrameLayout videoContainer;
     private float dX, dY;
     private String videoUrl;
     private Boolean isMovebale = true;
     private String gravity = "end-bottom";
     private int playCount = 0;
     private Integer maxPlays = 1;
-    private Boolean isCancel = true;
-
 
     public VideoFragment(JSONObject displayUnit) {
         this.cleverTapDisplayUnit = displayUnit;
@@ -92,22 +91,22 @@ public class VideoFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_video, container, false);
-        cancelBtn = view.findViewById(R.id.cancel_button);
-        videoView = view.findViewById(R.id.videoView);
-        draggableFrame = view.findViewById(R.id.draggable_frame);
-        expandButton = view.findViewById(R.id.expand_button);
-
         try {
-
             DisplayMetrics displayMetrics = new DisplayMetrics();
             WindowManager windowManager = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
             windowManager.getDefaultDisplay().getMetrics(displayMetrics);
 
+            view = inflater.inflate(R.layout.fragment_video, container, false);
+            cancelBtn = view.findViewById(R.id.cancel_button);
+            videoView = view.findViewById(R.id.videoView);
+            videoContainer = view.findViewById(R.id.video_container);
+            draggableFrame = view.findViewById(R.id.draggable_frame);
+            expandButton = view.findViewById(R.id.expand_button);
+            draggableFrame.setVisibility(View.INVISIBLE);
+            videoContainer.setVisibility(View.INVISIBLE);
 
             ViewGroup.LayoutParams params = draggableFrame.getLayoutParams();
-            params.height = (int) (displayMetrics.heightPixels / 6);
-            params.width = (int) (displayMetrics.widthPixels / 2);
+            params.width = displayMetrics.widthPixels / 3;
             draggableFrame.setLayoutParams(params);
 
             videoUrl = cleverTapDisplayUnit.getJSONObject("custom_kv").getString("nd_video_url");
@@ -115,6 +114,7 @@ public class VideoFragment extends Fragment {
             isMovebale = Boolean.parseBoolean(cleverTapDisplayUnit.getJSONObject("custom_kv").getString("nd_movable"));
             gravity = cleverTapDisplayUnit.getJSONObject("custom_kv").getString("nd_position");
             maxPlays = Integer.parseInt(Objects.requireNonNull(cleverTapDisplayUnit.getJSONObject("custom_kv").getString("nd_loop")));
+
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -166,6 +166,15 @@ public class VideoFragment extends Fragment {
         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mp) {
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        draggableFrame.setVisibility(View.VISIBLE);
+                        videoContainer.setVisibility(View.VISIBLE);
+                    }
+                });
+
+
                 videoView.start();  // Start playing the video once it's prepared
             }
         });
@@ -252,13 +261,14 @@ public class VideoFragment extends Fragment {
 
 
                 ViewGroup.LayoutParams params = draggableFrame.getLayoutParams();
-                params.height = (int) (displayMetrics.heightPixels / 2);
-                params.width = (int) (displayMetrics.widthPixels);
+                params.height = displayMetrics.heightPixels / 2;
+                params.width = displayMetrics.widthPixels;
                 draggableFrame.setLayoutParams(params);
             }
         });
 
-
+//        draggableFrame.setVisibility(View.VISIBLE);
+//        videoContainer.setVisibility(View.VISIBLE);
         return view;
     }
 
