@@ -7,7 +7,6 @@ import com.clevertap.android.sdk.displayunits.DisplayUnitListener
 import com.clevertap.android.sdk.displayunits.model.CleverTapDisplayUnit
 import com.clevertap.ct_templates.nd.coachmark.CoachMarkHelper
 import com.clevertap.ctcustomtemplates.databinding.ActivityRestaurantBinding
-
 import java.util.ArrayList
 
 class RestaurantActivity : AppCompatActivity(), DisplayUnitListener {
