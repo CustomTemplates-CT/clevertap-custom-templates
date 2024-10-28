@@ -10,4 +10,6 @@
     <color name="colorGraySoft">#efefef</color>
     <color name="colorBlackSoft">#262626</color>
 
+    <color name="tooltipOrangeColor">#FF9800</color>
+
 </resources>

@@ -33,6 +33,9 @@ class NativeDisplayActivity : AppCompatActivity(), NativeDisplayListener, Displa
         binding.openCoachMarkActivity.setOnClickListener {
             startActivity(Intent(applicationContext, RestaurantActivity::class.java))
         }
+        binding.openTooltipsActivity.setOnClickListener {
+            startActivity(Intent(applicationContext, TooltipsActivity::class.java))
+        }
 
         binding.pipNativeDisplay.setOnClickListener {
             cleverTapDefaultInstance.pushEvent("ShowPIPND")

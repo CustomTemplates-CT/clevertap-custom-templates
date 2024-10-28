@@ -16,7 +16,9 @@
         android:theme="@style/Theme.CleverTapCustomTemplates"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-
+        <activity
+            android:name=".ui.TooltipsActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.NativeDisplayActivity"
             android:exported="false" />
