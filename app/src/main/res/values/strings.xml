@@ -38,4 +38,9 @@
     <string name="pip_video">PIP Video</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="native_display">Navigate to Native Display</string>
+    <string name="push">Navigate to Push</string>
+    <string name="native_display_templates">Native Display templates</string>
+    <string name="navigate_to_tooltips">Navigate to Tooltips</string>
+    <string name="pip_native_display">PIP Native Display</string>
 </resources>

@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Native Display templates"
+        android:text="@string/native_display_templates"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -42,11 +42,25 @@
         app:layout_constraintVertical_chainStyle="packed" />
 
     <Button
+        android:id="@+id/open_tooltips_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="@string/navigate_to_tooltips"
+        app:layout_constraintBottom_toTopOf="@+id/open_coach_mark_activity"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.476"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recycler_view_story"
+        app:layout_constraintVertical_bias="0.859"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <Button
         android:id="@+id/pip_native_display"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-        android:text="PIP Native Display"
+        android:text="@string/pip_native_display"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -58,5 +72,6 @@
         android:layout_height="match_parent"
         android:background="@android:color/transparent"
         android:elevation="10dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
