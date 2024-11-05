@@ -12,4 +12,6 @@
 
     <color name="tooltipOrangeColor">#FF9800</color>
 
+    <color name="spotlightBackground">#D8000000</color>
+
 </resources>
