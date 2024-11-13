@@ -55,6 +55,7 @@ public class VideoFragment extends Fragment {
     private String gravity = "end-bottom";
     private int playCount = 0;
     private Integer maxPlays = 1;
+    private Boolean isExpanded = false;
 
     public VideoFragment(JSONObject displayUnit) {
         this.cleverTapDisplayUnit = displayUnit;
@@ -156,10 +157,10 @@ public class VideoFragment extends Fragment {
             });
         }
         CustomMediaController mediaController = new CustomMediaController((getContext()));
-        mediaController.setAnchorView(videoView);
+        //mediaController.setAnchorView(draggableFrame);
         Uri videoUri = Uri.parse(videoUrl);
         System.out.println(videoUri);
-        videoView.setMediaController(mediaController);
+        //videoView.setMediaController(mediaController);
 
         videoView.setVideoURI(videoUri);
 
@@ -180,61 +181,7 @@ public class VideoFragment extends Fragment {
         });
         if (isMovebale) {
             //isCancel = false;
-            draggableFrame.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View view, MotionEvent event) {
-                    switch (event.getAction()) {
-                        case MotionEvent.ACTION_DOWN:
-                            dX = view.getX() - event.getRawX();
-                            dY = view.getY() - event.getRawY();
-                            break;
-                        case MotionEvent.ACTION_MOVE:
-                            float newX = event.getRawX() + dX;
-                            float newY = event.getRawY() + dY;
-                            newX = Math.max(0, Math.min(newX, getScreenWidth() - view.getWidth()));
-                            newY = Math.max(0, Math.min(newY, getScreenHeight() - view.getHeight()));
-                            view.animate()
-                                    .x(newX)
-                                    .y(newY)
-                                    .setDuration(0)
-                                    .start();
-                            break;
-                        case MotionEvent.ACTION_UP:
-                            if (isOutOfScreenOnRight(view)) {
-                                stopVideo();
-                            }
-                            break;
-                        default:
-                            return false;
-                    }
-                    return true;
-                }
-
-                private boolean isOutOfScreenOnRight(View view) {
-                    System.out.println("Inside isOutOfScreenOnRight");
-                    // Get the screen width
-                    DisplayMetrics displayMetrics = new DisplayMetrics();
-                    getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-                    int screenWidth = displayMetrics.widthPixels;
-                    float viewRightEdge = view.getX() + view.getWidth();
-                    //Added "+100" for videoView to go out of screen from rightside
-                    return viewRightEdge >= screenWidth + 100;
-                }
-
-                private int getScreenWidth() {
-                    DisplayMetrics displayMetrics = new DisplayMetrics();
-                    getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-                    //Added "+100" for videoView to go out of screen from rightside
-                    return displayMetrics.widthPixels + 100;
-                }
-
-                @SuppressLint("ClickableViewAccessibility")
-                private int getScreenHeight() {
-                    DisplayMetrics displayMetrics = new DisplayMetrics();
-                    getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-                    return displayMetrics.heightPixels;
-                }
-            });
+            setTouchListener();
         }
         if (!isCancel) {
             cancelBtn.setVisibility(View.GONE);
@@ -255,21 +202,94 @@ public class VideoFragment extends Fragment {
         expandButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DisplayMetrics displayMetrics = new DisplayMetrics();
-                WindowManager windowManager = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
-                windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+                if(!isExpanded) {
+                    DisplayMetrics displayMetrics = new DisplayMetrics();
+                    WindowManager windowManager = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
+                    windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+                    ViewGroup.LayoutParams params = draggableFrame.getLayoutParams();
+                    params.width = displayMetrics.widthPixels;
+                    draggableFrame.setLayoutParams(params);
+                    videoContainer.setBackgroundColor(getResources().getColor(R.color.colorBlackSoft));
+                    draggableFrame.setOnTouchListener(null);
+                    isExpanded = true;
+                }
+                else{
+                    DisplayMetrics displayMetrics = new DisplayMetrics();
+                    WindowManager windowManager = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
+                    windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+                    ViewGroup.LayoutParams params = draggableFrame.getLayoutParams();
+                    params.width = displayMetrics.widthPixels / 3;
+                    draggableFrame.setLayoutParams(params);
+                    videoContainer.setBackgroundColor(getResources().getColor(R.color.transparent));
+                    setTouchListener();
+                    isExpanded = false;
+                }
 
-
-                ViewGroup.LayoutParams params = draggableFrame.getLayoutParams();
-                params.height = displayMetrics.heightPixels / 2;
-                params.width = displayMetrics.widthPixels;
-                draggableFrame.setLayoutParams(params);
             }
         });
 
 //        draggableFrame.setVisibility(View.VISIBLE);
 //        videoContainer.setVisibility(View.VISIBLE);
         return view;
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void setTouchListener() {
+        draggableFrame.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        dX = view.getX() - event.getRawX();
+                        dY = view.getY() - event.getRawY();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        float newX = event.getRawX() + dX;
+                        float newY = event.getRawY() + dY;
+                        newX = Math.max(0, Math.min(newX, getScreenWidth() - view.getWidth()));
+                        newY = Math.max(0, Math.min(newY, getScreenHeight() - view.getHeight()));
+                        view.animate()
+                                .x(newX)
+                                .y(newY)
+                                .setDuration(0)
+                                .start();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        if (isOutOfScreenOnRight(view)) {
+                            stopVideo();
+                        }
+                        break;
+                    default:
+                        return false;
+                }
+                return true;
+            }
+
+            private boolean isOutOfScreenOnRight(View view) {
+                System.out.println("Inside isOutOfScreenOnRight");
+                // Get the screen width
+                DisplayMetrics displayMetrics = new DisplayMetrics();
+                getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+                int screenWidth = displayMetrics.widthPixels;
+                float viewRightEdge = view.getX() + view.getWidth();
+                //Added "+100" for videoView to go out of screen from rightside
+                return viewRightEdge >= screenWidth + 100;
+            }
+
+            private int getScreenWidth() {
+                DisplayMetrics displayMetrics = new DisplayMetrics();
+                getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+                //Added "+100" for videoView to go out of screen from rightside
+                return displayMetrics.widthPixels + 100;
+            }
+
+            @SuppressLint("ClickableViewAccessibility")
+            private int getScreenHeight() {
+                DisplayMetrics displayMetrics = new DisplayMetrics();
+                getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+                return displayMetrics.heightPixels;
+            }
+        });
     }
 
     private void stopVideo() {

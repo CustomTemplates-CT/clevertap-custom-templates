@@ -9,5 +9,6 @@
 
     <color name="colorGraySoft">#efefef</color>
     <color name="colorBlackSoft">#262626</color>
+    <color name="transparent">#00FFFFFF</color>
 
 </resources>
