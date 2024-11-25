@@ -17,6 +17,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ui.LottieActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.SpotlightsActivity"
             android:exported="false" />
         <activity
@@ -73,6 +76,10 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+        <receiver
+            android:name="com.clevertap.android.sdk.pushnotification.fcm.CTFirebaseMessagingReceiver"
+            />
 
         <receiver android:name="com.clevertap.ct_templates.common.NotificationDismissReceiver" />
     </application>

@@ -45,6 +45,10 @@ class NativeDisplayActivity : AppCompatActivity(), NativeDisplayListener, Displa
         binding.pipNativeDisplay.setOnClickListener {
             cleverTapDefaultInstance.pushEvent("ShowPIPND")
         }
+
+        binding.lottieNativeDisplay.setOnClickListener {
+            startActivity(Intent(applicationContext, LottieActivity::class.java))
+        }
     }
 
     override fun onSuccess(id: String?) {

@@ -63,6 +63,7 @@ dependencies {
     implementation libs.exoplayer
     implementation libs.exoplayer.hls
     implementation libs.exoplayer.ui
+    implementation libs.lottie
 
     implementation project(':CT-Templates')
 }
