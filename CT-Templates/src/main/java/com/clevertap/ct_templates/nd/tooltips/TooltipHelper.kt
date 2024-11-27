@@ -9,19 +9,19 @@ import org.json.JSONObject
 class TooltipHelper {
 
     fun showTooltips(anyActivity: AppCompatActivity, unit: JSONObject, onComplete: () -> Unit) {
-        val tooltipCount = unit.getJSONObject("custom_kv").getInt("nd_tooltipCount")
-        val textColor = unit.getJSONObject("custom_kv").getString("nd_textColor")
-        val backgroundColor = unit.getJSONObject("custom_kv").getString("nd_backgroundColor")
+        val tooltipCount = unit.getJSONObject("custom_kv").getInt("nd_tooltips_count")
+        val textColor = unit.getJSONObject("custom_kv").getString("nd_text_color")
+        val backgroundColor = unit.getJSONObject("custom_kv").getString("nd_background_color")
 
         fun showNextTooltip(index: Int) {
             if (index < tooltipCount) {
-                val viewIdName = unit.getJSONObject("custom_kv").getString("nd_title${index + 1}_id")
+                val viewIdName = unit.getJSONObject("custom_kv").getString("nd_view${index + 1}_id")
                 val viewId = anyActivity.resources.getIdentifier(viewIdName, "id", anyActivity.packageName)
-                val text = unit.getJSONObject("custom_kv").getString("nd_title${index + 1}")
+                val text = unit.getJSONObject("custom_kv").getString("nd_view${index + 1}_tooltip")
                 val customKv = unit.optJSONObject("custom_kv") ?: return
 
                 fun getGravity(index: Int): Tooltip.Gravity {
-                    return when (customKv.optString("nd_title${index + 1}_gravity", "TOP").uppercase()) {
+                    return when (customKv.optString("nd_view${index + 1}_tooltip_gravity", "TOP").uppercase()) {
                         "RIGHT" -> Tooltip.Gravity.RIGHT
                         "LEFT" -> Tooltip.Gravity.LEFT
                         "BOTTOM" -> Tooltip.Gravity.BOTTOM

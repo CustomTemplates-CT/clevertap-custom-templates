@@ -12,11 +12,15 @@ class CoachMarkHelper {
     fun renderCoachMark(context: AppCompatActivity, unit: JSONObject, onComplete: () -> Unit) {
         coachMarkSequence = CoachMarkSequence(context)
         coachMarkSequence.apply {
-            val coachMarkCount = unit.getJSONObject("custom_kv").getInt("nd_coachMarkCount")
+            val coachMarkCount = unit.getJSONObject("custom_kv").getInt("nd_coachmarks_count")
             for (i in 1..coachMarkCount) {
-                val titleKey = "nd_title$i"
-                val subTitleKey = "nd_subtitle$i"
-                val viewId = context.resources.getIdentifier(unit.getJSONObject("custom_kv").getString(titleKey + "_id"), "id", context.packageName)
+                val titleKey = "nd_view${i}_title"
+                val subTitleKey = "nd_view${i}_subtitle"
+                val viewId = context.resources.getIdentifier(
+                    unit.getJSONObject("custom_kv").getString("nd_view${i}_id"),
+                    "id",
+                    context.packageName
+                )
                 val isLastItem = (i == coachMarkCount)
                 addCoachMarkItem(viewId, titleKey, subTitleKey, isLastItem, context, unit)
             }
@@ -28,17 +32,45 @@ class CoachMarkHelper {
         }
     }
 
-    fun addCoachMarkItem(viewId: Int, titleKey: String, subTitleKey: String, isLastItem: Boolean = false, context: AppCompatActivity, unit: JSONObject, ) {
+    fun addCoachMarkItem(
+        viewId: Int,
+        titleKey: String,
+        subTitleKey: String,
+        isLastItem: Boolean = false,
+        context: AppCompatActivity,
+        unit: JSONObject
+    ) {
+        val customKv = unit.getJSONObject("custom_kv")
+
         coachMarkSequence.addItem(
             targetView = context.findViewById(viewId),
-            title = unit.getJSONObject("custom_kv").getString(titleKey),
-            subTitle = unit.getJSONObject("custom_kv").getString(subTitleKey),
-            positiveButtonText = if (isLastItem) unit.getJSONObject("custom_kv").getString("nd_finalPositiveButtonText") else unit.getJSONObject("custom_kv").getString("nd_positiveButtonText"),
-            skipButtonText = if (isLastItem) null else unit.getJSONObject("custom_kv").getString("nd_skipButtonText"),
-            positiveButtonTextColor = Color.parseColor(unit.getJSONObject("custom_kv").getString("nd_postiveBtnTextColor")),
-            positiveButtonBGColor = Color.parseColor(unit.getJSONObject("custom_kv").getString("nd_postiveBtnBackgroundColor")),
-            skipButtonBGColor = if (!isLastItem) Color.parseColor(unit.getJSONObject("custom_kv").getString("nd_skipBtnBackgroundColor")) else Color.TRANSPARENT,
-            skipButtonTextColor = if (!isLastItem) Color.parseColor(unit.getJSONObject("custom_kv").getString("nd_skipBtnTextColor")) else Color.TRANSPARENT
+            title = customKv.getString(titleKey),
+            subTitle = customKv.getString(subTitleKey),
+            positiveButtonText = if (isLastItem) {
+                customKv.optString("nd_final_positive_button_text", "Ready to Explore")
+            } else {
+                customKv.optString("nd_positive_button_text", "Next")
+            },
+            skipButtonText = if (isLastItem) null else customKv.optString(
+                "nd_skip_button_text",
+                "Skip"
+            ),
+            positiveButtonTextColor = Color.parseColor(
+                customKv.optString("nd_positive_button_text_color", "#FFFFFF")
+            ),
+            positiveButtonBGColor = Color.parseColor(
+                customKv.optString("nd_positive_button_background_color", "#E83938")
+            ),
+            skipButtonBGColor = if (!isLastItem) {
+                Color.parseColor(customKv.optString("nd_skip_button_background_color", "#FFFFFF"))
+            } else {
+                Color.TRANSPARENT
+            },
+            skipButtonTextColor = if (!isLastItem) {
+                Color.parseColor(customKv.optString("nd_skip_button_text_color", "#000000"))
+            } else {
+                Color.TRANSPARENT
+            }
         )
     }
 }

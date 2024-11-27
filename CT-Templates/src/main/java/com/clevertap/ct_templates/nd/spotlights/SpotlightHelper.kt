@@ -20,13 +20,13 @@ class SpotlightHelper {
         val targets = ArrayList<Target>()
 
         // Get the spotlight count from the JSON object
-        val spotlightCount = unit.getJSONObject("custom_kv").getInt("nd_spotlightCount")
-        val textColor = unit.getJSONObject("custom_kv").getString("nd_textColor")
+        val spotlightCount = unit.getJSONObject("custom_kv").getInt("nd_spotlight_count")
+        val textColor = unit.getJSONObject("custom_kv").optString("nd_text_color", "#FFFFFF")
 
         for (i in 1..spotlightCount) {
-            val title = unit.getJSONObject("custom_kv").getString("nd_title$i")
-            val subtitle = unit.getJSONObject("custom_kv").getString("nd_subTitle$i")
-            val anchorId = unit.getJSONObject("custom_kv").getString("nd_title${i}_id")
+            val title = unit.getJSONObject("custom_kv").getString("nd_view${i}_title")
+            val subtitle = unit.getJSONObject("custom_kv").getString("nd_view${i}_subtitle")
+            val anchorId = unit.getJSONObject("custom_kv").getString("nd_view${i}_id")
 
             if (title.isNotEmpty() && anchorId.isNotEmpty()) {
                 val target = createTarget(anyActivity, anchorId, title, subtitle, textColor)
