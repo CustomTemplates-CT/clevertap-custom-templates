@@ -22,7 +22,8 @@ class RestaurantActivity : AppCompatActivity(), DisplayUnitListener {
         cleverTapDefaultInstance = CleverTapAPI.getDefaultInstance(applicationContext)
         cleverTapDefaultInstance?.setDisplayUnitListener(this)
 
-        cleverTapDefaultInstance?.pushEvent("CoachmarksND")
+//        cleverTapDefaultInstance?.pushEvent("CoachmarksND")
+        cleverTapDefaultInstance?.pushEvent("coachmarks_nd")
 
     }
 

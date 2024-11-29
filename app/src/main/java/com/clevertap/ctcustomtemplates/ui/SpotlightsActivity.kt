@@ -21,7 +21,8 @@ class SpotlightsActivity : AppCompatActivity(), DisplayUnitListener {
         cleverTapDefaultInstance = CleverTapAPI.getDefaultInstance(applicationContext)
         cleverTapDefaultInstance?.setDisplayUnitListener(this)
 
-        cleverTapDefaultInstance?.pushEvent("SpotlightsND")
+//        cleverTapDefaultInstance?.pushEvent("SpotlightsND")
+        cleverTapDefaultInstance?.pushEvent("spotlights_nd")
     }
 
     override fun onDisplayUnitsLoaded(units: java.util.ArrayList<CleverTapDisplayUnit>?) {
