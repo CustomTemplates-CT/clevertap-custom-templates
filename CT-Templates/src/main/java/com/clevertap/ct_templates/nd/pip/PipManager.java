@@ -44,7 +44,6 @@ public class PipManager {
         ));
         pipRelative.setPadding(dpToPx(1), dpToPx(1), dpToPx(1), dpToPx(1));
         pipRelative.setVisibility(View.VISIBLE);
-        // pipRelative.setBackgroundColor(Color.RED);
 
         // Enable dragging
         pipRelative.setOnTouchListener((view, event) -> {
