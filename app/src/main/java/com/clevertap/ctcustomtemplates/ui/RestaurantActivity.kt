@@ -28,13 +28,16 @@ class RestaurantActivity : AppCompatActivity(), DisplayUnitListener {
     }
 
     override fun onDisplayUnitsLoaded(units: ArrayList<CleverTapDisplayUnit>?) {
+        println("onDisplayUnitsLoaded: $units")
         for (i in 0 until units!!.size) {
             val unit = units[i]
+            println("unit: $unit")
             prepareDisplayView(unit)
         }
     }
 
     private fun prepareDisplayView(unit: CleverTapDisplayUnit) {
+        println("unit CM: ${unit.jsonObject}")
         if (unit.customExtras["nd_id"] == "nd_coachmarks") {
             CleverTapAPI.getDefaultInstance(this)?.pushDisplayUnitViewedEventForID(unit.unitID)
             CoachMarkHelper().renderCoachMark(this, unit.jsonObject){
