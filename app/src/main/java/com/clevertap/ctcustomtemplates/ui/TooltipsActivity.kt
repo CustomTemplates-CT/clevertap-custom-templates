@@ -22,7 +22,8 @@ class TooltipsActivity : AppCompatActivity(), DisplayUnitListener {
         setContentView(binding.root)
         cleverTapDefaultInstance = CleverTapAPI.getDefaultInstance(applicationContext)
 
-        cleverTapDefaultInstance?.pushEvent("ToolsTipsND")
+//        cleverTapDefaultInstance?.pushEvent("ToolsTipsND")
+        cleverTapDefaultInstance?.pushEvent("tooltips_nd")
 
         cleverTapDefaultInstance?.setDisplayUnitListener(this)
     }

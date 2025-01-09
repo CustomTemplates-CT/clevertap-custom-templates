@@ -1,8 +1,10 @@
 package com.clevertap.ct_templates.nd.coachmark
 
 import android.graphics.Color
+import android.util.Log
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import org.json.JSONException
 import org.json.JSONObject
 
 class CoachMarkHelper {
@@ -10,35 +12,117 @@ class CoachMarkHelper {
     lateinit var coachMarkSequence: CoachMarkSequence
 
     fun renderCoachMark(context: AppCompatActivity, unit: JSONObject, onComplete: () -> Unit) {
-        coachMarkSequence = CoachMarkSequence(context)
-        coachMarkSequence.apply {
-            val coachMarkCount = unit.getJSONObject("custom_kv").getInt("nd_coachMarkCount")
-            for (i in 1..coachMarkCount) {
-                val titleKey = "nd_title$i"
-                val subTitleKey = "nd_subtitle$i"
-                val viewId = context.resources.getIdentifier(unit.getJSONObject("custom_kv").getString(titleKey + "_id"), "id", context.packageName)
-                val isLastItem = (i == coachMarkCount)
-                addCoachMarkItem(viewId, titleKey, subTitleKey, isLastItem, context, unit)
-            }
+        try {
+            coachMarkSequence = CoachMarkSequence(context)
+            coachMarkSequence.apply {
+                var customKv = unit.optJSONObject("custom_kv")
+                if (customKv != null && customKv.has("nd_json")) {
+                    val ndJsonString = customKv.optString("nd_json", null)
+                    if (!ndJsonString.isNullOrEmpty()) {
+                        val parsedNdJson = JSONObject(ndJsonString)
+                        Log.d("CoachMarkHelper", "Parsed nd_json: $parsedNdJson")
+                        for (key in parsedNdJson.keys()) {
+                            customKv.put(key, parsedNdJson.get(key))
+                        }
+                    }
+                }
 
-            start(context.window?.decorView as ViewGroup)
-            setOnFinishCallback {
-                onComplete()
+                Log.d("CoachMarkHelper", "Merged customKv: $customKv")
+                val coachMarkCount = customKv?.optInt("nd_coachmarks_count", -1)
+                if (coachMarkCount == -1) {
+                    throw JSONException("'nd_coachmarks_count' is missing or invalid")
+                }
+
+                for (i in 1..coachMarkCount!!) {
+                    try {
+                        val titleKey = "nd_view${i}_title"
+                        val subTitleKey = "nd_view${i}_subtitle"
+                        val viewIdKey = "nd_view${i}_id"
+                        val viewIdString = customKv.optString(viewIdKey)
+                        if (viewIdString.isNullOrEmpty()) {
+                            throw JSONException("'$viewIdKey' is missing or empty")
+                        }
+
+                        val viewId = context.resources.getIdentifier(
+                            viewIdString,
+                            "id",
+                            context.packageName
+                        )
+                        if (viewId == 0) {
+                            throw JSONException("Invalid view ID for '$viewIdKey': $viewIdString")
+                        }
+
+                        val isLastItem = (i == coachMarkCount)
+                        addCoachMarkItem(viewId, titleKey, subTitleKey, isLastItem, context, customKv)
+                    } catch (e: JSONException) {
+                        Log.e(
+                            "CoachMarkHelper",
+                            "Error processing coach mark item $i: ${e.message}"
+                        )
+                    }
+                }
+
+                // Start the coach mark sequence
+                start(context.window?.decorView as ViewGroup)
+                setOnFinishCallback {
+                    onComplete()
+                }
             }
+        } catch (e: JSONException) {
+            Log.e("CoachMarkHelper", "Error initializing CoachMarkSequence: ${e.message}")
+        } catch (e: Exception) {
+            Log.e("CoachMarkHelper", "Unexpected error: ${e.message}")
         }
     }
 
-    fun addCoachMarkItem(viewId: Int, titleKey: String, subTitleKey: String, isLastItem: Boolean = false, context: AppCompatActivity, unit: JSONObject, ) {
-        coachMarkSequence.addItem(
-            targetView = context.findViewById(viewId),
-            title = unit.getJSONObject("custom_kv").getString(titleKey),
-            subTitle = unit.getJSONObject("custom_kv").getString(subTitleKey),
-            positiveButtonText = if (isLastItem) unit.getJSONObject("custom_kv").getString("nd_finalPositiveButtonText") else unit.getJSONObject("custom_kv").getString("nd_positiveButtonText"),
-            skipButtonText = if (isLastItem) null else unit.getJSONObject("custom_kv").getString("nd_skipButtonText"),
-            positiveButtonTextColor = Color.parseColor(unit.getJSONObject("custom_kv").getString("nd_postiveBtnTextColor")),
-            positiveButtonBGColor = Color.parseColor(unit.getJSONObject("custom_kv").getString("nd_postiveBtnBackgroundColor")),
-            skipButtonBGColor = if (!isLastItem) Color.parseColor(unit.getJSONObject("custom_kv").getString("nd_skipBtnBackgroundColor")) else Color.TRANSPARENT,
-            skipButtonTextColor = if (!isLastItem) Color.parseColor(unit.getJSONObject("custom_kv").getString("nd_skipBtnTextColor")) else Color.TRANSPARENT
-        )
+    fun addCoachMarkItem(
+        viewId: Int,
+        titleKey: String,
+        subTitleKey: String,
+        isLastItem: Boolean = false,
+        context: AppCompatActivity,
+        customKv: JSONObject
+    ) {
+        try {
+            coachMarkSequence.addItem(
+                targetView = context.findViewById(viewId),
+                title = customKv.optString(titleKey, "Default Title"),
+                subTitle = customKv.optString(subTitleKey, "Default Subtitle"),
+                positiveButtonText = if (isLastItem) {
+                    customKv.optString("nd_final_positive_button_text", "Ready to Explore")
+                } else {
+                    customKv.optString("nd_positive_button_text", "Next")
+                },
+                skipButtonText = if (isLastItem) null else customKv.optString(
+                    "nd_skip_button_text",
+                    "Skip"
+                ),
+                positiveButtonTextColor = Color.parseColor(
+                    customKv.optString("nd_positive_button_text_color", "#FFFFFF")
+                ),
+                positiveButtonBGColor = Color.parseColor(
+                    customKv.optString("nd_positive_button_background_color", "#E83938")
+                ),
+                skipButtonBGColor = if (!isLastItem) {
+                    Color.parseColor(
+                        customKv.optString(
+                            "nd_skip_button_background_color",
+                            "#FFFFFF"
+                        )
+                    )
+                } else {
+                    Color.TRANSPARENT
+                },
+                skipButtonTextColor = if (!isLastItem) {
+                    Color.parseColor(customKv.optString("nd_skip_button_text_color", "#000000"))
+                } else {
+                    Color.TRANSPARENT
+                }
+            )
+        } catch (e: JSONException) {
+            Log.e("CoachMarkHelper", "Error adding coach mark item: ${e.message}")
+        } catch (e: Exception) {
+            Log.e("CoachMarkHelper", "Unexpected error: ${e.message}")
+        }
     }
 }
