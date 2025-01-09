@@ -15,7 +15,9 @@ import android.view.ViewOutlineProvider;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.VideoView;
+
 import androidx.core.content.ContextCompat;
+
 import com.clevertap.ct_templates.R;
 
 public class PipManager {
@@ -173,8 +175,6 @@ public class PipManager {
 
 // Add Play/Pause toggle button to the RelativeLayout
         pipRelative.addView(playPauseButton);
-
-
 
 
 //        pipRelative.addView(containerView);
