@@ -1,17 +1,20 @@
 package com.clevertap.ctcustomtemplates.ui
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.clevertap.android.sdk.CleverTapAPI
 import com.clevertap.android.sdk.displayunits.DisplayUnitListener
 import com.clevertap.android.sdk.displayunits.model.CleverTapDisplayUnit
 import com.clevertap.ct_templates.TemplateRenderer
 import com.clevertap.ct_templates.nd.NativeDisplayListener
+import com.clevertap.ct_templates.nd.pip.PipManager
 import com.clevertap.ctcustomtemplates.CTApplication
-import com.clevertap.ctcustomtemplates.R
 import com.clevertap.ctcustomtemplates.databinding.ActivityNativeDisplayBinding
+import org.json.JSONObject
 
 class NativeDisplayActivity : AppCompatActivity(), NativeDisplayListener, DisplayUnitListener {
 
@@ -67,9 +70,7 @@ class NativeDisplayActivity : AppCompatActivity(), NativeDisplayListener, Displa
         for (i in 0 until units!!.size) {
             val unit = units[i]
             if (unit.customExtras["nd_id"].equals("nd_pip_video")) {
-                TemplateRenderer.getInstance().showNativeDisplay(
-                    R.id.pip_fragment, supportFragmentManager, unit.jsonObject, this
-                )
+                TemplateRenderer.getInstance().renderPiP(applicationContext, unit.jsonObject, binding.main)
             } else if (unit.customExtras["nd_id"].equals("nd_custom_button")) {
                 TemplateRenderer.getInstance().animateButton(
                     applicationContext, binding.root as ViewGroup?, unit.jsonObject, this

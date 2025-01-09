@@ -66,6 +66,10 @@ class InAppActivity : AppCompatActivity() {
             cleverTapDefaultInstance!!.pushEvent("YoutubeVideoInApp")
         }
 
+        binding.renderPip.setOnClickListener {
+            cleverTapDefaultInstance!!.pushEvent("ShowPIPInApp")
+        }
+
         if ("Dismiss" == intent.action) {
             var notificationId: Int = intent.getIntExtra("nid", -1)
             if (notificationId != -1) {
