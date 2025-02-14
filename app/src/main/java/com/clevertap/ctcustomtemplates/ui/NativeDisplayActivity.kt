@@ -1,20 +1,16 @@
 package com.clevertap.ctcustomtemplates.ui
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.clevertap.android.sdk.CleverTapAPI
 import com.clevertap.android.sdk.displayunits.DisplayUnitListener
 import com.clevertap.android.sdk.displayunits.model.CleverTapDisplayUnit
 import com.clevertap.ct_templates.TemplateRenderer
 import com.clevertap.ct_templates.nd.NativeDisplayListener
-import com.clevertap.ct_templates.nd.pip.PipManager
 import com.clevertap.ctcustomtemplates.CTApplication
 import com.clevertap.ctcustomtemplates.databinding.ActivityNativeDisplayBinding
-import org.json.JSONObject
 
 class NativeDisplayActivity : AppCompatActivity(), NativeDisplayListener, DisplayUnitListener {
 
@@ -47,10 +43,6 @@ class NativeDisplayActivity : AppCompatActivity(), NativeDisplayListener, Displa
 
         binding.pipNativeDisplay.setOnClickListener {
             cleverTapDefaultInstance.pushEvent("ShowPIPND")
-        }
-
-        binding.lottieNativeDisplay.setOnClickListener {
-            startActivity(Intent(applicationContext, LottieActivity::class.java))
         }
     }
 
