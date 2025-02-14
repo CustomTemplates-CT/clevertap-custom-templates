@@ -10,7 +10,6 @@ import com.clevertap.android.sdk.displayunits.model.CleverTapDisplayUnit
 import com.clevertap.ct_templates.TemplateRenderer
 import com.clevertap.ct_templates.nd.NativeDisplayListener
 import com.clevertap.ctcustomtemplates.CTApplication
-import com.clevertap.ctcustomtemplates.R
 import com.clevertap.ctcustomtemplates.databinding.ActivityNativeDisplayBinding
 
 class NativeDisplayActivity : AppCompatActivity(), NativeDisplayListener, DisplayUnitListener {
@@ -45,10 +44,6 @@ class NativeDisplayActivity : AppCompatActivity(), NativeDisplayListener, Displa
         binding.pipNativeDisplay.setOnClickListener {
             cleverTapDefaultInstance.pushEvent("ShowPIPND")
         }
-
-        binding.lottieNativeDisplay.setOnClickListener {
-            startActivity(Intent(applicationContext, LottieActivity::class.java))
-        }
     }
 
     override fun onSuccess(id: String?) {
@@ -67,9 +62,7 @@ class NativeDisplayActivity : AppCompatActivity(), NativeDisplayListener, Displa
         for (i in 0 until units!!.size) {
             val unit = units[i]
             if (unit.customExtras["nd_id"].equals("nd_pip_video")) {
-                TemplateRenderer.getInstance().showNativeDisplay(
-                    R.id.pip_fragment, supportFragmentManager, unit.jsonObject, this
-                )
+                TemplateRenderer.getInstance().renderPiP(applicationContext, unit.jsonObject, binding.main)
             } else if (unit.customExtras["nd_id"].equals("nd_custom_button")) {
                 TemplateRenderer.getInstance().animateButton(
                     applicationContext, binding.root as ViewGroup?, unit.jsonObject, this

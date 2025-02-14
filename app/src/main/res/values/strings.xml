@@ -45,4 +45,5 @@
     <string name="pip_native_display">PIP Native Display</string>
     <string name="navigate_to_spotlights">Navigate to Spotlights</string>
     <string name="lottie_native_display">Lottie Player</string>
+    <string name="render_pip">Render PiP</string>
 </resources>

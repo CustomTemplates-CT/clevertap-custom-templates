@@ -6,11 +6,14 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import androidx.annotation.IdRes;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import com.clevertap.ct_templates.nd.CustomButton;
 import com.clevertap.ct_templates.nd.NativeDisplayListener;
 import com.clevertap.ct_templates.nd.VideoFragment;
+import com.clevertap.ct_templates.nd.pip.PipManager;
 import com.clevertap.ct_templates.nd.story.StoryAdapter;
 import com.clevertap.ct_templates.pn.PushNotificationListener;
 import com.clevertap.ct_templates.pn.PushTemplateRenderer;
@@ -34,6 +37,14 @@ public class TemplateRenderer {
         FragmentTransaction transaction = supportFragmentManager.beginTransaction();
         transaction.add(buttonPushProfile, VideoFragment.newInstance(jsonObject, listener));
         transaction.commit();
+    }
+
+    public void renderPiP(Context context, JSONObject jsonObject, ConstraintLayout main) throws JSONException {
+        AppCompatActivity activity = new AppCompatActivity();
+        PipManager pipManager = new PipManager(context);
+        pipManager.createPiPLayout(main);
+        String pipUrl = jsonObject.getJSONObject("custom_kv").getString("nd_video_url");
+        pipManager.playVideo(pipUrl);
     }
 
     public void animateButton(Context applicationContext, ViewGroup viewGroup, JSONObject jsonObject,
