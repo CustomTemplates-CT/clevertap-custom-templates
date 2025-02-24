@@ -224,7 +224,10 @@ public class PushTemplateRenderer {
                 couponCodeView.setOnClickPendingIntent(R.id.clickarea, pendingIntent);
                 couponCodeViewsCollapsed.setOnClickPendingIntent(R.id.notification_coupon, pendingIntent);
 
-                builder.setStyle(new NotificationCompat.DecoratedCustomViewStyle()).setSmallIcon(R.drawable.pt_dot_sep).setCustomContentView(couponCodeViewsCollapsed).setCustomBigContentView(couponCodeView)// Set custom notification layout
+                builder.setStyle(new NotificationCompat.DecoratedCustomViewStyle())
+                        .setSmallIcon(R.drawable.pt_dot_sep).
+                        setCustomContentView(couponCodeViewsCollapsed)
+                        .setCustomBigContentView(couponCodeView)// Set custom notification layout
                         .setAutoCancel(true);
 
                 if (ActivityCompat.checkSelfPermission(applicationContext, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
