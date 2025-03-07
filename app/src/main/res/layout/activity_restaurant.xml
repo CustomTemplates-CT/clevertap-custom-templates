@@ -264,6 +264,7 @@
     </LinearLayout>
 
     <RelativeLayout
+        android:id="@+id/relid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -305,5 +306,22 @@
             android:src="@drawable/baseline_settings_24" />
 
     </RelativeLayout>
+
+    <FrameLayout
+        android:layout_below="@id/linlay2"
+        android:background="@color/colorPrimary"
+        android:id="@+id/frame_layout_restaurant"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <TextView
+            android:id="@+id/tv_inside_frame_layout"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:text="I am inside frame layout"
+            android:layout_height="wrap_content"/>
+
+    </FrameLayout>
+
 
 </RelativeLayout>

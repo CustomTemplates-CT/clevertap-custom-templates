@@ -65,5 +65,5 @@ dependencies {
     implementation libs.exoplayer.ui
     implementation libs.lottie
 
-    implementation project(':CT-Templates')
+    implementation fileTree(dir: "libs", include: ["*.aar"])
 }
