@@ -26,4 +26,15 @@
         <attr name="ttlm_duration" format="integer" />
         <attr name="android:layout_margin" />
     </declare-styleable>
+
+    <!-- Primary Button Color -->
+    <attr name="colorPrimary" format="color" />
+    <!-- Surface Background Color -->
+    <attr name="colorSurface" format="color" />
+    <!-- Text Color for Buttons -->
+    <attr name="textColorPrimary" format="color" />
+    <attr name="textColorPrimaryInverse" format="color" />
+    <!-- Outline (Stroke) Color -->
+    <attr name="colorOutlineVariant" format="color" />
+
 </resources>
