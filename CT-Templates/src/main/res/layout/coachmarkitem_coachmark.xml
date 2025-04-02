@@ -54,9 +54,9 @@
             android:layout_marginBottom="6dp"
             android:textSize="10sp"
             tools:ignore="SmallSp"
-            tools:text="(1/5)" />
+            android:text="(1/5)" />
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/btnSkip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -65,9 +65,9 @@
             android:layout_marginStart="2dp"
             android:layout_marginTop="20dp"
             android:textAllCaps="false"
-            tools:text="Skip" />
+            android:text="@string/coachmarkSkip" />
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/btnNext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -75,7 +75,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginTop="20dp"
             android:textAllCaps="false"
-            tools:text="Next" />
+            android:text="@string/coachmarkNext" />
 
     </RelativeLayout>
 
