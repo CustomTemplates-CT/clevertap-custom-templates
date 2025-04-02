@@ -32,7 +32,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textAppearance="@style/PushTitle"
-            tools:text="title" />
+            android:text="title" />
 
         <TextView
             android:id="@+id/msg"
@@ -48,7 +48,7 @@
             android:ellipsize="end"
             android:maxLines="3"
             android:textAppearance="@style/PushMessageMultiLine"
-            tools:text="message message" />
+            android:text="message message" />
 
 
         <ImageView

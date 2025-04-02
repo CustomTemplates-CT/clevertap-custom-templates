@@ -29,7 +29,7 @@
 
 
     <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/profile_image"
+        android:id="@+id/frame_layout_restaurant"
         android:layout_width="60dp"
         android:layout_height="56dp"
         android:layout_alignParentRight="true"
@@ -43,7 +43,7 @@
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:layout_below="@id/profile_image"
+        android:layout_below="@id/frame_layout_restaurant"
         android:layout_marginTop="10dp"
         android:scaleType="fitXY"
         android:src="@drawable/banner2"
