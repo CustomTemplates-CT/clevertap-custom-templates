@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/pip_view"
+    android:layout_width="300dp"
+    android:layout_height="500dp"
+    android:background="@android:color/black"
+    android:elevation="10dp"
+    android:visibility="gone"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    tools:ignore="MissingConstraints">
+
+    <VideoView
+        android:id="@+id/video_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center" />
+
+    <ImageButton
+        android:id="@+id/btn_play_pause"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="16dp"
+        android:background="@android:color/transparent"
+        android:src="@android:drawable/ic_media_play" />
+
+    <ImageButton
+        android:id="@+id/btn_close"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="top|end"
+        android:layout_margin="8dp"
+        android:background="@android:color/transparent"
+        android:src="@android:drawable/ic_menu_close_clear_cancel" />
+
+    <ImageButton
+        android:id="@+id/btn_mute"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_gravity="top|start"
+        android:layout_margin="8dp"
+        android:background="@android:color/transparent"
+        android:src="@android:drawable/ic_lock_silent_mode" />
+
+    <ImageButton
+        android:id="@+id/btn_expand"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="8dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="Expand"
+        android:src="@drawable/expand_video_icon" />
+</FrameLayout>
