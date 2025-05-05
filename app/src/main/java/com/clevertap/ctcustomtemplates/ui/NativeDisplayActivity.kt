@@ -1,8 +1,10 @@
 package com.clevertap.ctcustomtemplates.ui
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.clevertap.android.sdk.CleverTapAPI
 import com.clevertap.android.sdk.displayunits.DisplayUnitListener
@@ -11,6 +13,7 @@ import com.clevertap.ct_templates.TemplateRenderer
 import com.clevertap.ct_templates.nd.NativeDisplayListener
 import com.clevertap.ctcustomtemplates.CTApplication
 import com.clevertap.ctcustomtemplates.databinding.ActivityNativeDisplayBinding
+import com.clevertap.ct_templates.nd.pip.PipVideoManager
 
 class NativeDisplayActivity : AppCompatActivity(), NativeDisplayListener, DisplayUnitListener {
 
@@ -58,11 +61,21 @@ class NativeDisplayActivity : AppCompatActivity(), NativeDisplayListener, Displa
         cleverTapDefaultInstance.pushDisplayUnitClickedEventForID(id)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onDisplayUnitsLoaded(units: ArrayList<CleverTapDisplayUnit>?) {
         for (i in 0 until units!!.size) {
             val unit = units[i]
             if (unit.customExtras["nd_id"].equals("nd_pip_video")) {
-                TemplateRenderer.getInstance().renderPiP(applicationContext, unit.jsonObject, binding.main)
+                PipVideoManager(
+                    context = this,
+                    unitJsonObject = unit.jsonObject,
+                    onViewed = {
+                        CleverTapAPI.getDefaultInstance(this)?.pushDisplayUnitViewedEventForID(unit.unitID)
+                    },
+                    onClicked = {
+                        CleverTapAPI.getDefaultInstance(this)?.pushDisplayUnitClickedEventForID(unit.unitID)
+                    }
+                ).initialize()
             } else if (unit.customExtras["nd_id"].equals("nd_custom_button")) {
                 TemplateRenderer.getInstance().animateButton(
                     applicationContext, binding.root as ViewGroup?, unit.jsonObject, this
