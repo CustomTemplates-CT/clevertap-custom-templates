@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,9 +20,18 @@ import androidx.core.app.NotificationManagerCompat;
 import com.clevertap.ct_templates.R;
 import com.clevertap.ct_templates.common.Utils;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+
+import pl.droidsonroids.gif.GifDrawable;
 
 public class PushTemplateRenderer {
 
@@ -33,16 +43,6 @@ public class PushTemplateRenderer {
         } else {
             return instance;
         }
-    }
-
-    static ArrayList<String> getImageListFromExtras(Bundle extras, String size) {
-        ArrayList<String> imageList = new ArrayList<>();
-        for (String key : extras.keySet()) {
-            if (key.contains("pt_" + size + "_img")) {
-                imageList.add(extras.getString(key));
-            }
-        }
-        return imageList;
     }
 
     public void render(Context applicationContext, Bundle extras, PushNotificationListener listener) {
@@ -67,19 +67,23 @@ public class PushTemplateRenderer {
         try {
             int notificationId = new Random().nextInt(60000);
 
-            ArrayList<String> smallImageList = getImageListFromExtras(extras, "small");
-            ArrayList<String> largeImageList = getImageListFromExtras(extras, "large");
-
+            String gifUrl = extras.getString("pt_gif");
             String pushTitle = extras.getString("pt_title");
             String pushMessage = extras.getString("pt_msg");
             String deepLink = extras.getString("pt_dl");
 
-            if (pushTitle == null || pushMessage == null || smallImageList.isEmpty() || largeImageList.isEmpty() || deepLink == null) {
-                throw new IllegalArgumentException();
+            if (gifUrl == null || pushTitle == null || pushMessage == null || deepLink == null) {
+                throw new IllegalArgumentException("Missing required extras");
             }
-            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(applicationContext);
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(applicationContext, extras.getString("wzrk_cid"));
 
+            List<Bitmap> gifFrames = GifUtils.extractGifFrames(applicationContext, gifUrl);
+            if (gifFrames.isEmpty()) {
+                Log.e("GIF_NOTIFICATION", "No frames extracted from GIF.");
+                listener.onPushFailed();
+                return;
+            }
+
+            List<Bitmap> selectedFrames = gifFrames.subList(0, Math.min(5, gifFrames.size()));
 
             RemoteViews gifExpandedContentView = new RemoteViews(applicationContext.getPackageName(), R.layout.gif_notification);
             RemoteViews gifCollapsedContentView = new RemoteViews(applicationContext.getPackageName(), R.layout.gif_collapsed);
@@ -87,40 +91,37 @@ public class PushTemplateRenderer {
             gifExpandedContentView.setTextViewText(R.id.title, pushTitle);
             gifExpandedContentView.setTextViewText(R.id.msg, pushMessage);
 
-            for (String image : smallImageList) {
+            for (Bitmap bitmap : selectedFrames) {
                 RemoteViews imageContentView = new RemoteViews(applicationContext.getPackageName(), R.layout.image_view);
-                Utils.loadImageURLIntoRemoteView(R.id.fimg, image, imageContentView, applicationContext);
+                imageContentView.setImageViewBitmap(R.id.fimg, bitmap);
                 gifCollapsedContentView.addView(R.id.view_flipper, imageContentView);
             }
 
-            for (String image : largeImageList) {
+            for (Bitmap bitmap : selectedFrames) {
                 RemoteViews imageContentView = new RemoteViews(applicationContext.getPackageName(), R.layout.image_view);
-                Utils.loadImageURLIntoRemoteView(R.id.fimg, image, imageContentView, applicationContext);
+                imageContentView.setImageViewBitmap(R.id.fimg, bitmap);
                 gifExpandedContentView.addView(R.id.view_flipper, imageContentView);
             }
 
-            if (ActivityCompat.checkSelfPermission(applicationContext, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
-
-//            builder.setStyle(new NotificationCompat.DecoratedCustomViewStyle())
-//                    .setSmallIcon(R.drawable.pt_dot_sep)
-//                    .setCustomContentView(gifCollapsedContentView)
-//                    .setCustomBigContentView(gifExpandedContentView)
-//                    .setOnlyAlertOnce(true)
-//                    .setAutoCancel(true);
-
-            notificationManager.notify(notificationId, builder.setContentTitle(pushTitle)
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(applicationContext, extras.getString("wzrk_cid"))
+                    .setContentTitle(pushTitle)
                     .setSmallIcon(R.drawable.custom_progress_drawable)
                     .setCustomContentView(gifCollapsedContentView)
                     .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                     .setCustomBigContentView(gifExpandedContentView)
                     .setOnlyAlertOnce(true)
                     .setPriority(NotificationCompat.PRIORITY_MAX)
-                    .build());
+                    .setAutoCancel(true);
 
+            if (ActivityCompat.checkSelfPermission(applicationContext, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+
+            NotificationManagerCompat.from(applicationContext).notify(notificationId, builder.build());
             listener.onPushRendered();
+
         } catch (Exception e) {
+            Log.e("GIF_NOTIFICATION", "Failed to render notification", e);
             listener.onPushFailed();
         }
     }
@@ -241,3 +242,26 @@ public class PushTemplateRenderer {
     }
 }
 
+class GifUtils {
+
+    public static List<Bitmap> extractGifFrames(Context context, String gifUrl) {
+        List<Bitmap> frameList = new ArrayList<>();
+        try {
+            // Buffered stream improves compatibility with streamed content
+            InputStream inputStream = new BufferedInputStream(new URL(gifUrl).openStream());
+            GifDrawable gifDrawable = new GifDrawable(inputStream);
+
+            int frameCount = gifDrawable.getNumberOfFrames();
+            Log.d("GIF_FRAMES", "Extracted frame count: " + frameCount);
+
+            for (int i = 0; i < frameCount; i++) {
+                Bitmap bmp = gifDrawable.seekToFrameAndGet(i);
+                frameList.add(bmp);
+            }
+
+        } catch (Exception e) {
+            Log.e("GIF_FRAMES", "Error decoding gif: " + e.getMessage(), e);
+        }
+        return frameList;
+    }
+}
