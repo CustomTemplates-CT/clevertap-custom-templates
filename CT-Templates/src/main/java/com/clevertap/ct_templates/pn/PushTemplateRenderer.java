@@ -3,9 +3,11 @@ package com.clevertap.ct_templates.pn;
 
 import android.Manifest;
 import android.app.PendingIntent;
+import android.app.UiModeManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -28,9 +30,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.Set;
 
 import pl.droidsonroids.gif.GifDrawable;
 
@@ -64,96 +68,102 @@ public class PushTemplateRenderer {
         }
     }
 
-    private void renderGIFNotification(Context applicationContext, Bundle extras, PushNotificationListener listener) {
+    private void renderGIFNotification(Context context, Bundle extras, PushNotificationListener listener) {
         try {
             int notificationId = new Random().nextInt(60000);
 
-//            String gifUrl = extras.getString("pt_gif");
-            String gifUrl = "https://karthik-ct.github.io/image-gallery/gifs/gif2.gif";
-            String pushTitle = extras.getString("pt_title");
-            String pushMessage = extras.getString("pt_msg");
+            String gifUrl = extras.getString("pt_gif");
+            String title = extras.getString("pt_title");
+            String message = extras.getString("pt_msg");
             String deepLink = extras.getString("pt_dl");
+            String channelId = extras.getString("wzrk_cid");
 
-            if (gifUrl == null || pushTitle == null || pushMessage == null || deepLink == null) {
+            if (gifUrl == null || title == null || message == null || deepLink == null || channelId == null) {
                 throw new IllegalArgumentException("Missing required extras");
             }
 
-            List<Bitmap> gifFrames = extractAlternateFrames(applicationContext, gifUrl);
-
-            if (gifFrames.isEmpty()) {
-                Log.e("GIF_NOTIFICATION", "No frames extracted from GIF.");
+            List<Bitmap> frames = extractOptimizedFrames(context, gifUrl, 15);
+            if (frames.isEmpty()) {
+                Log.e("GIF_NOTIFICATION", "No frames extracted.");
                 listener.onPushFailed();
                 return;
             }
 
-            List<Bitmap> selectedFrames = gifFrames.subList(0, Math.min(5, gifFrames.size()));
+            int nightMode = context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+            int textColor = (nightMode == Configuration.UI_MODE_NIGHT_YES) ? Color.WHITE : Color.BLACK;
 
-            RemoteViews gifExpandedContentView = new RemoteViews(applicationContext.getPackageName(), R.layout.gif_notification);
-            RemoteViews gifCollapsedContentView = new RemoteViews(applicationContext.getPackageName(), R.layout.gif_collapsed);
+            RemoteViews collapsedView = new RemoteViews(context.getPackageName(), R.layout.gif_collapsed);
+            RemoteViews expandedView = new RemoteViews(context.getPackageName(), R.layout.gif_notification);
 
-            gifExpandedContentView.setTextViewText(R.id.title, pushTitle);
-            gifExpandedContentView.setTextColor(R.id.title, Color.WHITE);
-            gifExpandedContentView.setTextViewText(R.id.msg, pushMessage);
-            gifExpandedContentView.setTextColor(R.id.msg, Color.WHITE);
+            expandedView.setTextViewText(R.id.title, title);
+            expandedView.setTextColor(R.id.title, textColor);
+            expandedView.setTextViewText(R.id.msg, message);
+            expandedView.setTextColor(R.id.msg, textColor);
 
-            for (Bitmap bitmap : selectedFrames) {
-                RemoteViews imageContentView = new RemoteViews(applicationContext.getPackageName(), R.layout.image_view);
-                imageContentView.setImageViewBitmap(R.id.fimg, bitmap);
-                gifCollapsedContentView.addView(R.id.view_flipper, imageContentView);
+            for (Bitmap bitmap : frames) {
+                RemoteViews frameView = new RemoteViews(context.getPackageName(), R.layout.image_view);
+                frameView.setImageViewBitmap(R.id.fimg, bitmap);
+                collapsedView.addView(R.id.view_flipper, frameView);
+                expandedView.addView(R.id.view_flipper, frameView);
             }
 
-            for (Bitmap bitmap : selectedFrames) {
-                RemoteViews imageContentView = new RemoteViews(applicationContext.getPackageName(), R.layout.image_view);
-                imageContentView.setImageViewBitmap(R.id.fimg, bitmap);
-                gifExpandedContentView.addView(R.id.view_flipper, imageContentView);
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                return;
             }
 
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(applicationContext, extras.getString("wzrk_cid"))
-                    .setContentTitle(pushTitle)
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
                     .setSmallIcon(R.drawable.custom_progress_drawable)
-                    .setCustomContentView(gifCollapsedContentView)
+                    .setCustomContentView(collapsedView)
+                    .setCustomBigContentView(expandedView)
                     .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
-                    .setCustomBigContentView(gifExpandedContentView)
                     .setOnlyAlertOnce(true)
                     .setPriority(NotificationCompat.PRIORITY_MAX)
                     .setAutoCancel(true);
 
-            if (ActivityCompat.checkSelfPermission(applicationContext, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                return;
-            }
-
-            NotificationManagerCompat.from(applicationContext).notify(notificationId, builder.build());
+            NotificationManagerCompat.from(context).notify(notificationId, builder.build());
             listener.onPushRendered();
 
         } catch (Exception e) {
-            Log.e("GIF_NOTIFICATION", "Failed to render notification", e);
+            Log.e("GIF_NOTIFICATION", "Notification rendering failed", e);
             listener.onPushFailed();
         }
     }
-
-    public static List<Bitmap> extractAlternateFrames(Context context, String gifUrl) {
-        List<Bitmap> selectedFrames = new ArrayList<>();
-        try {
-            InputStream inputStream = new BufferedInputStream(new URL(gifUrl).openStream());
+    
+    public static List<Bitmap> extractOptimizedFrames(Context context, String gifUrl, int maxFrames) {
+        List<Bitmap> frames = new ArrayList<>();
+        try (InputStream inputStream = new BufferedInputStream(new URL(gifUrl).openStream())) {
             GifDrawable gifDrawable = new GifDrawable(inputStream);
+            int total = gifDrawable.getNumberOfFrames();
+            Log.d("GIF_FRAMES", "Total frames in gif: " + total);
 
-            int frameCount = gifDrawable.getNumberOfFrames();
-            Log.d("GIF_FRAMES", "Total frames in gif: " + frameCount);
+            Set<Integer> indices = new LinkedHashSet<>();
 
-            for (int i = 0; i < frameCount; i++) {
-                // Include first, last, and all odd-numbered frames
-                if (i == 0 || i == frameCount - 1 || i % 2 == 1) {
-                    Bitmap frame = gifDrawable.seekToFrameAndGet(i);
-                    Bitmap scaled = Bitmap.createScaledBitmap(frame, 400, 200, true); // Optional scaling
-                    selectedFrames.add(scaled);
+            if (total <= maxFrames) {
+                for (int i = 1; i < total; i += 2) indices.add(i);
+                if ((total - 1) % 2 == 0) indices.add(total - 1);
+            } else {
+                indices.add(0);
+                indices.add(total - 1);
+                int step = (total - 2) / (maxFrames - 2);
+                for (int i = 1; i < maxFrames - 1; i++) {
+                    indices.add(i * step);
                 }
             }
 
+            for (int index : indices) {
+                Bitmap frame = gifDrawable.seekToFrameAndGet(index);
+                Bitmap scaled = Bitmap.createScaledBitmap(frame, 400, 200, true);
+                frames.add(scaled);
+                Log.d("GIF_FRAMES", "Selected frame index: " + index);
+            }
+
+            Log.d("GIF_FRAMES", "Total selected frames: " + frames.size());
+
         } catch (Exception e) {
-            Log.e("GIF_FRAMES", "Error extracting alternate frames: " + e.getMessage(), e);
+            Log.e("GIF_FRAMES", "Frame extraction failed: " + e.getMessage(), e);
         }
 
-        return selectedFrames;
+        return frames;
     }
 
     private void renderProgressBarNotification(Context applicationContext, Bundle extras, PushNotificationListener listener) {
