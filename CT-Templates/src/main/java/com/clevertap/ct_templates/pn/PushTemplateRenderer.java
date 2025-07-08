@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -67,7 +68,8 @@ public class PushTemplateRenderer {
         try {
             int notificationId = new Random().nextInt(60000);
 
-            String gifUrl = extras.getString("pt_gif");
+//            String gifUrl = extras.getString("pt_gif");
+            String gifUrl = "https://karthik-ct.github.io/image-gallery/gifs/gif2.gif";
             String pushTitle = extras.getString("pt_title");
             String pushMessage = extras.getString("pt_msg");
             String deepLink = extras.getString("pt_dl");
@@ -76,7 +78,8 @@ public class PushTemplateRenderer {
                 throw new IllegalArgumentException("Missing required extras");
             }
 
-            List<Bitmap> gifFrames = GifUtils.extractGifFrames(applicationContext, gifUrl);
+            List<Bitmap> gifFrames = extractAlternateFrames(applicationContext, gifUrl);
+
             if (gifFrames.isEmpty()) {
                 Log.e("GIF_NOTIFICATION", "No frames extracted from GIF.");
                 listener.onPushFailed();
@@ -89,7 +92,9 @@ public class PushTemplateRenderer {
             RemoteViews gifCollapsedContentView = new RemoteViews(applicationContext.getPackageName(), R.layout.gif_collapsed);
 
             gifExpandedContentView.setTextViewText(R.id.title, pushTitle);
+            gifExpandedContentView.setTextColor(R.id.title, Color.WHITE);
             gifExpandedContentView.setTextViewText(R.id.msg, pushMessage);
+            gifExpandedContentView.setTextColor(R.id.msg, Color.WHITE);
 
             for (Bitmap bitmap : selectedFrames) {
                 RemoteViews imageContentView = new RemoteViews(applicationContext.getPackageName(), R.layout.image_view);
@@ -124,6 +129,31 @@ public class PushTemplateRenderer {
             Log.e("GIF_NOTIFICATION", "Failed to render notification", e);
             listener.onPushFailed();
         }
+    }
+
+    public static List<Bitmap> extractAlternateFrames(Context context, String gifUrl) {
+        List<Bitmap> selectedFrames = new ArrayList<>();
+        try {
+            InputStream inputStream = new BufferedInputStream(new URL(gifUrl).openStream());
+            GifDrawable gifDrawable = new GifDrawable(inputStream);
+
+            int frameCount = gifDrawable.getNumberOfFrames();
+            Log.d("GIF_FRAMES", "Total frames in gif: " + frameCount);
+
+            for (int i = 0; i < frameCount; i++) {
+                // Include first, last, and all odd-numbered frames
+                if (i == 0 || i == frameCount - 1 || i % 2 == 1) {
+                    Bitmap frame = gifDrawable.seekToFrameAndGet(i);
+                    Bitmap scaled = Bitmap.createScaledBitmap(frame, 400, 200, true); // Optional scaling
+                    selectedFrames.add(scaled);
+                }
+            }
+
+        } catch (Exception e) {
+            Log.e("GIF_FRAMES", "Error extracting alternate frames: " + e.getMessage(), e);
+        }
+
+        return selectedFrames;
     }
 
     private void renderProgressBarNotification(Context applicationContext, Bundle extras, PushNotificationListener listener) {
